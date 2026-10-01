@@ -31,25 +31,25 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
       
       {/* LEFT: Brand Identity */}
       <div 
-        className="flex items-center gap-3 flex-shrink-0 cursor-pointer group" 
+        className="flex items-center gap-2 sm:gap-3 flex-shrink-0 cursor-pointer group" 
         onClick={() => setActiveView('kiosk')}
         title="UByTeS Attendance System"
       >
         <img
           src="/ubytes_logo.png"
           alt="Young Thinkers Society Logo"
-          className="w-11 h-11 object-contain drop-shadow-md group-hover:scale-105 transition-transform"
+          className="w-9 h-9 sm:w-11 sm:h-11 object-contain drop-shadow-md group-hover:scale-105 transition-transform"
         />
         <div className="leading-tight">
-          <div className="flex items-center gap-2">
-            <h1 className="font-display tracking-wider text-xl sm:text-2xl text-white font-bold leading-none">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <h1 className="font-display tracking-wider text-base sm:text-xl md:text-2xl text-white font-bold leading-none">
               YOUNG THINKERS SOCIETY
             </h1>
-            <span className="text-[10px] font-black bg-ubytes-amber-500 text-ubytes-maroon-950 px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
+            <span className="text-[9px] sm:text-[10px] font-black bg-ubytes-amber-500 text-ubytes-maroon-950 px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
               UBYTES
             </span>
           </div>
-          <p className="text-[11px] font-condensed tracking-wider uppercase text-amber-200/80 font-medium mt-0.5">
+          <p className="text-[10px] sm:text-[11px] font-condensed tracking-wider uppercase text-amber-200/80 font-medium mt-0.5 hidden xs:block">
             University of Bohol • BS Computer Science
           </p>
         </div>
@@ -86,7 +86,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
       <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
         
         {/* Navigation Toolbar */}
-        <div className="flex items-center gap-1 bg-black/25 p-1 rounded-xl border border-white/10">
+        <div className="hidden sm:flex items-center gap-1 bg-black/25 p-1 rounded-xl border border-white/10">
           <button
             onClick={onOpenDirectory}
             className="btn-subtle active:scale-[0.96] flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-amber-100/90 hover:text-white hover:bg-white/10 transition-all font-condensed tracking-wide"

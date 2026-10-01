@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { CreditCard, LayoutDashboard, Users, Calendar, Zap } from 'lucide-react';
 import { Student, AttendanceRecord, EventSession, AdminUser } from './types';
 import { INITIAL_STUDENTS, INITIAL_EVENTS, INITIAL_ATTENDANCE } from './data/mockStudents';
 import { TopNavbar } from './components/TopNavbar';
@@ -704,7 +705,7 @@ export function App() {
       />
 
       {/* Main Content Area with Subtle View Transition */}
-      <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
+      <main className="flex-1 p-3 sm:p-4 md:p-8 max-w-7xl mx-auto w-full pb-20 md:pb-8">
         <div key={activeView} className="view-enter">
           {activeView === 'kiosk' ? (
             <RfidKioskView
@@ -802,6 +803,63 @@ export function App() {
           onClose={() => setUnpairedCardScanned(null)}
         />
       )}
+
+      {/* Mobile Bottom Navigation Dock (Visible on mobile & small screens < md) */}
+      <nav 
+        aria-label="Mobile Navigation"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#3d050a]/95 backdrop-blur-md border-t-2 border-ubytes-amber-500/70 px-2 py-1.5 shadow-2xl flex items-center justify-around select-none"
+      >
+        <button
+          onClick={() => setActiveView('kiosk')}
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all font-condensed tracking-wider uppercase text-[10px] active:scale-95 cursor-pointer ${
+            activeView === 'kiosk'
+              ? 'text-ubytes-amber-400 font-bold'
+              : 'text-white/60 hover:text-white'
+          }`}
+        >
+          <CreditCard className="w-4 h-4 mb-0.5" />
+          <span>Kiosk</span>
+        </button>
+
+        <button
+          onClick={() => setActiveView('dashboard')}
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all font-condensed tracking-wider uppercase text-[10px] active:scale-95 cursor-pointer ${
+            activeView === 'dashboard'
+              ? 'text-ubytes-amber-400 font-bold'
+              : 'text-white/60 hover:text-white'
+          }`}
+        >
+          <LayoutDashboard className="w-4 h-4 mb-0.5" />
+          <span>Dashboard</span>
+        </button>
+
+        <button
+          onClick={() => setIsDirectoryOpen(true)}
+          className="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all font-condensed tracking-wider uppercase text-[10px] text-white/60 hover:text-white active:scale-95 cursor-pointer"
+        >
+          <Users className="w-4 h-4 mb-0.5" />
+          <span>Directory</span>
+        </button>
+
+        <button
+          onClick={() => setIsCreateEventOpen(true)}
+          className="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all font-condensed tracking-wider uppercase text-[10px] text-white/60 hover:text-white active:scale-95 cursor-pointer"
+        >
+          <Calendar className="w-4 h-4 mb-0.5" />
+          <span>Sessions</span>
+        </button>
+
+        <button
+          onClick={() => setIsCloudModalOpen(true)}
+          className="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all font-condensed tracking-wider uppercase text-[10px] text-white/60 hover:text-white active:scale-95 cursor-pointer relative"
+        >
+          <Zap className={`w-4 h-4 mb-0.5 ${isCloudActive ? 'text-emerald-400' : ''}`} />
+          <span>Sync</span>
+          {isCloudActive && (
+            <span className="absolute top-1 right-2.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          )}
+        </button>
+      </nav>
     </div>
   );
 }
