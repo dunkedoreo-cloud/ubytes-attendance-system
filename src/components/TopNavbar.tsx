@@ -36,7 +36,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         title="UByTeS Attendance System"
       >
         <img
-          src="/ubytes_logo.png"
+          src="./ubytes_logo.png"
           alt="Young Thinkers Society Logo"
           className="w-9 h-9 sm:w-11 sm:h-11 object-contain drop-shadow-md group-hover:scale-105 transition-transform"
         />

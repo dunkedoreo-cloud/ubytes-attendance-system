@@ -1,6 +1,6 @@
 import { Student, EventSession, AttendanceRecord } from '../types';
 
-export const DEFAULT_AVATAR = '/default_avatar.jpg';
+export const DEFAULT_AVATAR = './default_avatar.jpg';
 
 export const INITIAL_STUDENTS: Student[] = [
   {

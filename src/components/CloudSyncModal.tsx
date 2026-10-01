@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Database, FileSpreadsheet, CheckCircle2, AlertCircle, 
-  ExternalLink, Copy, Check, RefreshCw, Send, ShieldCheck, Zap
+  ExternalLink, Copy, Check, RefreshCw, Send, ShieldCheck, Zap,
+  Eye, EyeOff
 } from 'lucide-react';
 import { 
   getSupabaseSettings, saveSupabaseSettings, testSupabaseConnection, 
@@ -33,6 +34,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
   // Supabase Form State
   const [supabaseUrl, setSupabaseUrl] = useState('');
   const [supabaseKey, setSupabaseKey] = useState('');
+  const [showKeyPassword, setShowKeyPassword] = useState(false);
   const [supabaseStatus, setSupabaseStatus] = useState<{ testing: boolean; result: { success: boolean; message: string } | null }>({
     testing: false,
     result: null
@@ -251,15 +253,35 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                     </label>
                     <span className="text-[10px] text-emerald-600 font-medium">Publishable key (sb_publishable_...) or Legacy anon</span>
                   </div>
-                  <input
-                    type="password"
-                    value={supabaseKey}
-                    onChange={(e) => setSupabaseKey(e.target.value)}
-                    placeholder="sb_publishable_... or eyJhbGciOi..."
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-ubytes-amber-500 font-mono"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showKeyPassword ? "text" : "password"}
+                      value={supabaseKey}
+                      onChange={(e) => setSupabaseKey(e.target.value)}
+                      placeholder="sb_publishable_... or eyJhbGciOi..."
+                      className={`w-full px-3 py-2 pr-10 bg-slate-50 border rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 font-mono ${
+                        supabaseKey.startsWith('http') 
+                          ? 'border-red-400 focus:ring-red-400 bg-red-50/50' 
+                          : 'border-slate-300 focus:ring-ubytes-amber-500'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowKeyPassword(prev => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                      title={showKeyPassword ? "Hide Key" : "Show Key"}
+                    >
+                      {showKeyPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {supabaseKey.startsWith('http') && (
+                    <div className="mt-1.5 p-2 bg-red-50 border border-red-200 rounded-lg text-red-700 text-[11px] font-medium flex items-center gap-1.5">
+                      <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                      <span><strong>Warning:</strong> You entered a URL instead of your Supabase API key! Paste your Anon Key (starts with <code>eyJ...</code> from Supabase &gt; Project Settings &gt; API).</span>
+                    </div>
+                  )}
                   <p className="mt-1 text-[10px] text-slate-500">
-                    Supabase renamed the <strong>anon key</strong> to <strong>Publishable key</strong> (starts with <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-700">sb_publishable_</code>). You can copy that directly, or click the "Legacy anon" tab.
+                    Supabase API keys start with <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-700">eyJhbGci...</code> or <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-700">sb_publishable_...</code>. Copy it from <strong>Supabase Dashboard &gt; Project Settings &gt; API</strong>.
                   </p>
                 </div>
 

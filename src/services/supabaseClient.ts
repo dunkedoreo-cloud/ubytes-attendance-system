@@ -29,14 +29,14 @@ export function saveSupabaseSettings(url: string, anonKey: string) {
 
 export function isSupabaseConfigured(): boolean {
   const { url, anonKey } = getSupabaseSettings();
-  return Boolean(url && anonKey && url.startsWith('http'));
+  return Boolean(url && anonKey && url.startsWith('http') && !anonKey.startsWith('http'));
 }
 
 export function getSupabase(): SupabaseClient | null {
   if (cachedClient) return cachedClient;
 
   const { url, anonKey } = getSupabaseSettings();
-  if (!url || !anonKey || !url.startsWith('http')) {
+  if (!url || !anonKey || !url.startsWith('http') || anonKey.startsWith('http')) {
     return null;
   }
 
@@ -60,6 +60,13 @@ export async function testSupabaseConnection(customUrl?: string, customKey?: str
 
   if (!url || !key) {
     return { success: false, message: 'Please provide both Supabase Project URL and Anon Key.' };
+  }
+
+  if (key.startsWith('http://') || key.startsWith('https://')) {
+    return { 
+      success: false, 
+      message: 'Invalid Anon Key! You entered a URL instead of your Supabase API Key. Find your Anon Key (starts with "eyJ...") in Supabase Dashboard > Project Settings > API.' 
+    };
   }
 
   try {
@@ -106,7 +113,7 @@ export async function fetchStudentsFromSupabase(): Promise<Student[] | null> {
       program: row.program,
       yearLevel: row.year_level,
       role: row.role,
-      photo: row.photo || '/default_avatar.jpg',
+      photo: row.photo || './default_avatar.jpg',
       email: row.email
     }));
   } catch (err) {
@@ -378,7 +385,7 @@ export function subscribeToRealtimeMasterData(
           program: row.program,
           yearLevel: row.year_level,
           role: row.role,
-          photo: row.photo || '/default_avatar.jpg',
+          photo: row.photo || './default_avatar.jpg',
           email: row.email
         });
       }
@@ -393,7 +400,7 @@ export function subscribeToRealtimeMasterData(
           program: row.program,
           yearLevel: row.year_level,
           role: row.role,
-          photo: row.photo || '/default_avatar.jpg',
+          photo: row.photo || './default_avatar.jpg',
           email: row.email
         });
       }

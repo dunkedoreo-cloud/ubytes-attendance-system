@@ -12,7 +12,7 @@ interface CardPairingModalProps {
   onClose: () => void;
 }
 
-const DEFAULT_AVATAR = '/default_avatar.jpg';
+const DEFAULT_AVATAR = './default_avatar.jpg';
 
 export const CardPairingModal: React.FC<CardPairingModalProps> = ({
   isOpen,

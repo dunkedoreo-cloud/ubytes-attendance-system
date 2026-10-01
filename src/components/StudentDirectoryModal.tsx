@@ -25,7 +25,7 @@ interface ScanFeedback {
   studentName?: string;
 }
 
-const DEFAULT_STUDENT_PHOTO = '/default_avatar.jpg';
+const DEFAULT_STUDENT_PHOTO = './default_avatar.jpg';
 
 export const StudentDirectoryModal: React.FC<StudentDirectoryModalProps> = ({
   isOpen,

@@ -466,7 +466,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
       <div 
         className="relative rounded-3xl shadow-2xl ring-1 ring-black/10 w-full overflow-hidden"
         style={{
-          backgroundImage: "url('/official_banner.svg')",
+          backgroundImage: "url('./official_banner.svg')",
           backgroundSize: '100% 100%',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
@@ -517,8 +517,8 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                   <div className="relative flex-shrink-0">
                     <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl p-1 bg-gradient-to-tr from-ubytes-amber-500 via-ubytes-gold to-ubytes-maroon-800 shadow-md flex items-center justify-center overflow-hidden">
                       <img
-                        src={lastScannedStudent.photo || '/default_avatar.jpg'}
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/default_avatar.jpg'; }}
+                        src={lastScannedStudent.photo || './default_avatar.jpg'}
+                        onError={(e) => { (e.target as HTMLImageElement).src = './default_avatar.jpg'; }}
                         alt={lastScannedStudent.name}
                         className="w-full h-full rounded-2xl object-cover bg-white"
                       />
@@ -759,8 +759,8 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                           <td className="py-1.5 px-1 align-middle text-center whitespace-nowrap">
                             <div className="flex items-center justify-center gap-1.5 min-w-0">
                               <img
-                                src={row.photo || '/default_avatar.jpg'}
-                                onError={(e) => { (e.target as HTMLImageElement).src = '/default_avatar.jpg'; }}
+                                src={row.photo || './default_avatar.jpg'}
+                                onError={(e) => { (e.target as HTMLImageElement).src = './default_avatar.jpg'; }}
                                 alt=""
                                 className="w-5 h-5 rounded-full object-cover border border-slate-200 flex-shrink-0 bg-slate-100"
                               />
@@ -868,8 +868,8 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-3">
                   <img 
-                    src={lastScannedStudent.photo || '/default_avatar.jpg'} 
-                    onError={(e) => { (e.target as HTMLImageElement).src = '/default_avatar.jpg'; }}
+                    src={lastScannedStudent.photo || './default_avatar.jpg'} 
+                    onError={(e) => { (e.target as HTMLImageElement).src = './default_avatar.jpg'; }}
                     alt="" 
                     className="w-14 h-14 rounded-full object-cover bg-slate-100" 
                   />

@@ -31,14 +31,17 @@ const DEFAULT_ADMIN: AdminUser = {
   name: 'ADMIN',
   email: 'admin@ub.edu.ph',
   role: 'System Administrator',
-  avatar: '/default_avatar.jpg',
+  avatar: './default_avatar.jpg',
   pin: '1234',
   isLoggedIn: true,
 };
 
 const sanitizePhoto = (photo?: string): string => {
-  if (!photo || photo.includes('unsplash.com')) {
-    return '/default_avatar.jpg';
+  if (!photo || photo.includes('unsplash.com') || photo === '/default_avatar.jpg') {
+    return './default_avatar.jpg';
+  }
+  if (photo.startsWith('/')) {
+    return `.${photo}`;
   }
   return photo;
 };
@@ -151,7 +154,7 @@ export function App() {
         id: 'admin-01',
         username: 'ADMIN',
         name: 'ADMIN',
-        avatar: (!parsed[0].avatar || parsed[0].avatar.includes('unsplash.com')) ? '/default_avatar.jpg' : parsed[0].avatar
+        avatar: (!parsed[0].avatar || parsed[0].avatar.includes('unsplash.com') || parsed[0].avatar === '/default_avatar.jpg') ? './default_avatar.jpg' : (parsed[0].avatar.startsWith('/') ? '.' + parsed[0].avatar : parsed[0].avatar)
       };
       return parsed;
     } catch {
@@ -766,7 +769,25 @@ export function App() {
         students={students}
         attendanceRecords={attendanceRecords}
         onCloudStateChanged={() => {
-          setIsCloudActive(isSupabaseConfigured() || isGoogleSheetsConfigured());
+          const active = isSupabaseConfigured() || isGoogleSheetsConfigured();
+          setIsCloudActive(active);
+          if (isSupabaseConfigured()) {
+            fetchStudentsFromSupabase().then(sbStudents => {
+              if (sbStudents && sbStudents.length > 0) {
+                setStudents(sbStudents);
+              }
+            });
+            fetchEventsFromSupabase().then(sbEvents => {
+              if (sbEvents && sbEvents.length > 0) {
+                setEvents(sbEvents);
+                const currentActive = sbEvents.find(e => e.id === activeSession.id);
+                if (currentActive) setActiveSession(currentActive);
+              }
+            });
+            fetchAttendanceFromSupabase().then(sbAtt => {
+              if (sbAtt) setAttendanceRecords(sbAtt);
+            });
+          }
         }}
       />
 

@@ -105,7 +105,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           {/* Officer Card Info */}
           <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
             <img
-              src={selectedAdmin.avatar || '/default_avatar.jpg'}
+              src={selectedAdmin.avatar || './default_avatar.jpg'}
               alt={selectedAdmin.name}
               className="w-12 h-12 rounded-full object-cover ring-2 ring-ubytes-amber-400 bg-slate-200"
             />
@@ -153,7 +153,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                     }`}
                   >
                     <img
-                      src={acc.avatar || '/default_avatar.jpg'}
+                      src={acc.avatar || './default_avatar.jpg'}
                       alt=""
                       className="w-7 h-7 rounded-full object-cover bg-slate-200"
                     />

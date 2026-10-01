@@ -17,7 +17,7 @@ interface UserProfileModalProps {
 }
 
 const PRESET_AVATARS = [
-  '/default_avatar.jpg',
+  './default_avatar.jpg',
   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=faces',
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop&crop=faces',
   'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop&crop=faces',
@@ -42,7 +42,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const [name, setName] = useState(currentUser.name || 'ADMIN');
   const [role, setRole] = useState(currentUser.role || 'System Administrator');
   const [email, setEmail] = useState(currentUser.email || 'admin@ub.edu.ph');
-  const [avatar, setAvatar] = useState(currentUser.avatar || '/default_avatar.jpg');
+  const [avatar, setAvatar] = useState(currentUser.avatar || './default_avatar.jpg');
   const [pin, setPin] = useState(currentUser.pin || '1234');
   const [showSavedToast, setShowSavedToast] = useState(false);
 
@@ -53,7 +53,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const [newRole, setNewRole] = useState('Executive Officer');
   const [newEmail, setNewEmail] = useState('');
   const [newPin, setNewPin] = useState('1234');
-  const [newAvatar, setNewAvatar] = useState('/default_avatar.jpg');
+  const [newAvatar, setNewAvatar] = useState('./default_avatar.jpg');
   const [registerSuccessToast, setRegisterSuccessToast] = useState<string | null>(null);
 
   // Sync state when currentUser changes
@@ -62,7 +62,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     setName(currentUser.name || 'ADMIN');
     setRole(currentUser.role || 'System Administrator');
     setEmail(currentUser.email || 'admin@ub.edu.ph');
-    setAvatar(currentUser.avatar || '/default_avatar.jpg');
+    setAvatar(currentUser.avatar || './default_avatar.jpg');
     setPin(currentUser.pin || '1234');
   }, [currentUser]);
 
@@ -102,7 +102,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
       name: name.trim() || 'ADMIN',
       role: role.trim() || 'System Administrator',
       email: email.trim(),
-      avatar: avatar.trim() || '/default_avatar.jpg',
+      avatar: avatar.trim() || './default_avatar.jpg',
       pin: pin.trim() || '1234',
     });
 
@@ -123,7 +123,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
       name: newName.trim(),
       role: newRole.trim() || 'Executive Officer',
       email: newEmail.trim() || `${newUsername.trim().toLowerCase()}@ub.edu.ph`,
-      avatar: newAvatar || '/default_avatar.jpg',
+      avatar: newAvatar || './default_avatar.jpg',
       pin: newPin.trim() || '1234',
       isLoggedIn: false
     };
@@ -138,7 +138,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     setNewName('');
     setNewEmail('');
     setNewPin('1234');
-    setNewAvatar('/default_avatar.jpg');
+    setNewAvatar('./default_avatar.jpg');
 
     setTimeout(() => {
       setRegisterSuccessToast(null);
@@ -220,7 +220,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <div className="flex items-center gap-4 p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
                 <label className="relative group cursor-pointer flex-shrink-0" title="Click to upload from gallery">
                   <img
-                    src={avatar || '/default_avatar.jpg'}
+                    src={avatar || './default_avatar.jpg'}
                     alt={name}
                     className="w-16 h-16 rounded-full object-cover ring-2 ring-ubytes-amber-400 shadow-md group-hover:brightness-90 transition-all bg-slate-200"
                   />
@@ -586,7 +586,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="relative flex-shrink-0">
                           <img
-                            src={account.avatar || '/default_avatar.jpg'}
+                            src={account.avatar || './default_avatar.jpg'}
                             alt={account.name}
                             className="w-11 h-11 rounded-full object-cover ring-2 ring-ubytes-amber-400/70 bg-slate-200"
                           />
