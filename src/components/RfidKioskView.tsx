@@ -463,17 +463,18 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
       {/* ========================================================================= */}
       {/* CRISP VECTOR SVG BANNER KIOSK: Matches bag-ong boner.svg & frame layout   */}
       {/* ========================================================================= */}
-      <div 
-        className="relative rounded-3xl shadow-2xl ring-1 ring-black/10 w-full overflow-hidden"
-        style={{
-          backgroundImage: "url('./official_banner.svg')",
-          backgroundSize: '100% 100%',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
+      <div className="relative rounded-3xl shadow-2xl ring-1 ring-black/10 w-full overflow-hidden bg-gradient-to-br from-[#3d050a] via-[#520911] to-[#260306]">
         {/* Proportional Container for Desktop/Laptop */}
-        <div className="hidden lg:block relative w-full" style={{ paddingBottom: '48.5%' }}>
+        <div 
+          className="hidden lg:block relative w-full" 
+          style={{ 
+            paddingBottom: '48.5%',
+            backgroundImage: "url('./official_banner.svg')",
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
           
           {/* ======================================================= */}
           {/* ======================================================= */}
@@ -861,50 +862,107 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
         </div>
 
         {/* Mobile / Tablet Responsive Fallback */}
-        <div className="lg:hidden p-4 space-y-4">
+        <div className="lg:hidden p-3 sm:p-5 space-y-4">
           <div className="bg-white rounded-2xl p-4 shadow-xl border border-white/80">
-            <h3 className="font-display tracking-wider text-slate-900 text-xl mb-2">STUDENT PROFILE</h3>
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-ubytes-amber-500"></span>
+                <h3 className="font-display tracking-wider text-slate-900 text-lg sm:text-xl">STUDENT PROFILE</h3>
+              </div>
+              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1 font-condensed uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Scanner Ready
+              </span>
+            </div>
+
             {lastScannedStudent ? (
-              <div className="space-y-2 text-xs">
+              <div className="space-y-3 text-xs">
                 <div className="flex items-center gap-3">
                   <img 
                     src={lastScannedStudent.photo || './default_avatar.jpg'} 
                     onError={(e) => { (e.target as HTMLImageElement).src = './default_avatar.jpg'; }}
                     alt="" 
-                    className="w-14 h-14 rounded-full object-cover bg-slate-100" 
+                    className="w-16 h-16 rounded-2xl object-cover bg-slate-100 ring-2 ring-ubytes-amber-400/80 shadow flex-shrink-0" 
                   />
-                  <div>
-                    <h4 className="font-display text-lg text-slate-900">{lastScannedStudent.name}</h4>
-                    <span className="font-mono text-ubytes-maroon-800 font-bold">{lastScannedStudent.id}</span>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-display text-lg text-slate-900 truncate leading-tight">{lastScannedStudent.name}</h4>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="font-mono text-ubytes-maroon-800 font-bold text-xs bg-red-50 border border-red-200 px-1.5 py-0.5 rounded">
+                        {lastScannedStudent.id}
+                      </span>
+                      <span className="text-[11px] font-condensed text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                        {lastScannedStudent.yearLevel}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                      {lastScannedStudent.program}
+                    </p>
                   </div>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-slate-100">
-                  <span>{lastScannedStudent.program}</span>
-                  <span className="font-bold">
+
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                  <span className="font-semibold text-slate-600 text-[11px] bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                    {lastScannedStudent.role}
+                  </span>
+                  <div>
                     {lastScannedRecord?.timeOut ? (
-                      <span className="text-blue-600">Checked Out</span>
+                      <span className="text-blue-700 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[11px]">
+                        Checked Out
+                      </span>
                     ) : (
-                      <span className={lastScannedRecord?.status === 'On-Time' ? 'text-emerald-600' : 'text-amber-600'}>
+                      <span className={`font-bold px-2 py-0.5 rounded text-[11px] ${
+                        lastScannedRecord?.status === 'On-Time' 
+                          ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' 
+                          : 'text-amber-700 bg-amber-50 border border-amber-200'
+                      }`}>
                         {lastScannedRecord?.status || 'On-Time'}
                       </span>
                     )}
-                  </span>
+                  </div>
                 </div>
+
                 {lastScannedRecord && (
-                  <div className="flex justify-between text-[11px] font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded">
-                    <span>In: {lastScannedRecord.timeIn}</span>
-                    <span>Out: {lastScannedRecord.timeOut || 'In Session'}</span>
+                  <div className="flex justify-between text-[11px] font-mono text-slate-600 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
+                    <span>Time In: <strong className="text-slate-900">{lastScannedRecord.timeIn}</strong></span>
+                    <span>Time Out: <strong className="text-slate-900">{lastScannedRecord.timeOut || 'In Session'}</strong></span>
                   </div>
                 )}
               </div>
             ) : (
-              <p className="text-xs text-slate-400">Ready for RFID scan...</p>
+              <p className="text-xs text-slate-400 py-3 text-center">Ready for RFID scan... Tap a card or search above.</p>
             )}
           </div>
 
           <div className="bg-white rounded-2xl p-4 shadow-xl border border-white/80">
-            <h3 className="font-display tracking-wider text-slate-900 text-xl mb-2">ATTENDANCE DATABASE</h3>
-            <div className="overflow-x-auto max-h-60">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-ubytes-maroon-800"></span>
+                <h3 className="font-display tracking-wider text-slate-900 text-lg sm:text-xl">ATTENDANCE DATABASE</h3>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={handleExportCSV}
+                  className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold font-condensed uppercase tracking-wider flex items-center gap-1 cursor-pointer"
+                  title="Export to CSV"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>CSV</span>
+                </button>
+                {onClearSessionAttendance && sessionRecords.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowClearModal(true)}
+                    className="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-lg text-xs font-bold font-condensed uppercase tracking-wider flex items-center gap-1 cursor-pointer"
+                    title="Reset Session Attendance"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    <span>Reset</span>
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="overflow-x-auto max-h-72">
               <table className="w-full text-xs">
                 <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-400">
                   <tr>
