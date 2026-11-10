@@ -18,7 +18,8 @@ import {
   fetchEventsFromSupabase, upsertEventToSupabase, deleteEventFromSupabase,
   fetchAttendanceFromSupabase, logAttendanceToSupabase, deleteAttendanceRecordFromSupabase,
   clearSessionAttendanceFromSupabase,
-  subscribeToRealtimeAttendance, subscribeToRealtimeMasterData, isSupabaseConfigured 
+  subscribeToRealtimeAttendance, subscribeToRealtimeMasterData, isSupabaseConfigured,
+  mergeAttendanceRecords, syncLocalAttendanceToSupabase
 } from './services/supabaseClient';
 import { 
   syncRecordToGoogleSheet, isGoogleSheetsConfigured 
@@ -65,29 +66,22 @@ export function App() {
   });
 
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(() => {
-    const savedStudents = localStorage.getItem('ubytes_students');
-    const validStudents: Student[] = savedStudents ? JSON.parse(savedStudents) : INITIAL_STUDENTS;
-    const validStudentIds = new Set(validStudents.map((s: Student) => s.id));
-
     const saved = localStorage.getItem('ubytes_attendance');
     if (!saved) return [];
 
     try {
       const records: AttendanceRecord[] = JSON.parse(saved);
-      // Cleanse any legacy mock records (e.g. att-1, att-2) and ensure student is in roster
-      const authentic = records.filter(r => 
+      if (!Array.isArray(records)) return [];
+
+      // Valid attendance records must have at least studentId and eventId
+      const valid = records.filter(r => 
         r && 
-        r.id && 
-        !/^att-\d+$/i.test(r.id) && 
-        validStudentIds.has(r.studentId)
+        typeof r === 'object' && 
+        r.studentId && 
+        (r.eventId || r.id)
       );
 
-      // Cleanse localStorage immediately so legacy mock data is purged
-      if (authentic.length !== records.length) {
-        localStorage.setItem('ubytes_attendance', JSON.stringify(authentic));
-      }
-
-      return authentic.map(r => ({
+      return valid.map(r => ({
         ...r,
         photo: sanitizePhoto(r.photo)
       }));
@@ -103,13 +97,25 @@ export function App() {
     if (!saved) return null;
     try {
       const records: AttendanceRecord[] = JSON.parse(saved);
-      const authentic = records.filter(r => r && r.id && !/^att-\d+$/i.test(r.id));
-      if (authentic.length > 0) {
-        const latest = authentic[0];
+      if (!Array.isArray(records) || records.length === 0) return null;
+      const valid = records.filter(r => r && r.studentId);
+      if (valid.length > 0) {
+        const latest = valid[0];
         const savedStudents = localStorage.getItem('ubytes_students');
         const list: Student[] = savedStudents ? JSON.parse(savedStudents) : INITIAL_STUDENTS;
         const matched = list.find(s => s.id === latest.studentId);
-        return matched ? { ...matched, photo: sanitizePhoto(matched.photo) } : null;
+        if (matched) {
+          return { ...matched, photo: sanitizePhoto(matched.photo) };
+        }
+        return {
+          id: latest.studentId,
+          rfidUid: '',
+          name: latest.studentName,
+          program: latest.program,
+          yearLevel: latest.yearLevel,
+          role: 'Active Member',
+          photo: sanitizePhoto(latest.photo)
+        };
       }
     } catch {
       return null;
@@ -122,11 +128,12 @@ export function App() {
     if (!saved) return null;
     try {
       const records: AttendanceRecord[] = JSON.parse(saved);
-      const authentic = records.filter(r => r && r.id && !/^att-\d+$/i.test(r.id));
-      if (authentic.length > 0) {
+      if (!Array.isArray(records) || records.length === 0) return null;
+      const valid = records.filter(r => r && r.studentId);
+      if (valid.length > 0) {
         return {
-          ...authentic[0],
-          photo: sanitizePhoto(authentic[0].photo)
+          ...valid[0],
+          photo: sanitizePhoto(valid[0].photo)
         };
       }
     } catch {
@@ -210,31 +217,17 @@ export function App() {
     localStorage.setItem('ubytes_attendance', JSON.stringify(attendanceRecords));
   }, [attendanceRecords]);
 
-  // Reconcile and purge any orphaned attendance records if a student is deleted from directory
+  // Keep lastScannedStudent aligned if students list updates
   useEffect(() => {
-    const studentIdSet = new Set(students.map(s => s.id));
-    setAttendanceRecords(prev => {
-      const filtered = prev.filter(r => studentIdSet.has(r.studentId));
-      if (filtered.length !== prev.length) {
-        return filtered;
-      }
-      return prev;
-    });
-
-    // If currently highlighted student is no longer in directory, switch to first available
-    if (lastScannedStudent && !studentIdSet.has(lastScannedStudent.id)) {
-      const firstValid = students.length > 0 ? students[0] : null;
-      setLastScannedStudent(firstValid);
-      if (firstValid) {
-        const match = attendanceRecords.find(
-          r => r.studentId === firstValid.id && r.eventId === activeSession.id
-        );
-        setLastScannedRecord(match || null);
-      } else {
-        setLastScannedRecord(null);
+    if (lastScannedStudent) {
+      const studentIdSet = new Set(students.map(s => s.id));
+      if (!studentIdSet.has(lastScannedStudent.id) && students.length > 0) {
+        // Only re-align if deleted student was active
+        const firstValid = students[0];
+        setLastScannedStudent(firstValid);
       }
     }
-  }, [students, activeSession]);
+  }, [students]);
 
   // Supabase Hydration and Realtime listener
   useEffect(() => {
@@ -258,21 +251,32 @@ export function App() {
       }
     });
 
-    // Fetch attendance records
+    // Fetch attendance records and MERGE (offline-first: NEVER wipe out local records!)
     fetchAttendanceFromSupabase().then(sbAttendance => {
       if (sbAttendance !== null) {
-        setAttendanceRecords(sbAttendance);
-        if (sbAttendance.length > 0) {
-          const latest = sbAttendance[0];
-          setLastScannedRecord(latest);
-          const matched = students.find(s => s.id === latest.studentId);
-          if (matched) {
-            setLastScannedStudent({ ...matched, photo: sanitizePhoto(matched.photo) });
+        setAttendanceRecords(prev => {
+          // Merge remote records with local records so offline and freshly tapped cards are never cleared
+          const merged = mergeAttendanceRecords(prev, sbAttendance);
+
+          // Auto-sync any local attendance records that are not yet in Supabase
+          const sbKeySet = new Set(sbAttendance.map(r => `${r.eventId}::${r.studentId}`));
+          const unsynced = prev.filter(r => !sbKeySet.has(`${r.eventId}::${r.studentId}`));
+          if (unsynced.length > 0) {
+            syncLocalAttendanceToSupabase(unsynced).catch(err => {
+              console.warn('Auto-syncing local records to Supabase:', err);
+            });
           }
-        } else {
-          setLastScannedRecord(null);
-          setLastScannedStudent(null);
-        }
+
+          if (merged.length > 0 && !lastScannedRecord) {
+            const latest = merged[0];
+            setLastScannedRecord(latest);
+            const matched = students.find(s => s.id === latest.studentId);
+            if (matched) {
+              setLastScannedStudent({ ...matched, photo: sanitizePhoto(matched.photo) });
+            }
+          }
+          return merged;
+        });
       }
     });
 
@@ -280,10 +284,16 @@ export function App() {
     const unsubAttendance = subscribeToRealtimeAttendance(
       (newRecord) => {
         setAttendanceRecords(prev => {
-          const existingIndex = prev.findIndex(r => r.id === newRecord.id);
+          const existingIndex = prev.findIndex(r => 
+            r.id === newRecord.id || 
+            (r.studentId === newRecord.studentId && r.eventId === newRecord.eventId)
+          );
           if (existingIndex >= 0) {
             const copy = [...prev];
-            copy[existingIndex] = newRecord;
+            copy[existingIndex] = {
+              ...copy[existingIndex],
+              ...newRecord
+            };
             return copy;
           }
           return [newRecord, ...prev];
@@ -785,7 +795,9 @@ export function App() {
               }
             });
             fetchAttendanceFromSupabase().then(sbAtt => {
-              if (sbAtt) setAttendanceRecords(sbAtt);
+              if (sbAtt) {
+                setAttendanceRecords(prev => mergeAttendanceRecords(prev, sbAtt));
+              }
             });
           }
         }}

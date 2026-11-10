@@ -228,34 +228,160 @@ export async function upsertEventToSupabase(event: EventSession): Promise<boolea
 }
 
 /**
- * Log attendance record to Supabase
+ * Merge local attendance records with remote Supabase records.
+ * Ensures local offline records are NEVER deleted or overwritten by empty cloud responses.
+ */
+export function mergeAttendanceRecords(
+  localRecords: AttendanceRecord[],
+  remoteRecords: AttendanceRecord[]
+): AttendanceRecord[] {
+  const map = new Map<string, AttendanceRecord>();
+
+  // Canonical composite key: eventId::studentId (or fallback to id)
+  const makeKey = (r: AttendanceRecord) => {
+    if (r.eventId && r.studentId) {
+      return `${r.eventId.trim()}::${r.studentId.trim()}`;
+    }
+    return r.id || `${Math.random()}`;
+  };
+
+  // 1. Seed with local records (the primary offline source of truth)
+  for (const loc of localRecords) {
+    if (!loc || !loc.studentId) continue;
+    map.set(makeKey(loc), { ...loc });
+  }
+
+  // 2. Merge remote records from Supabase
+  for (const rem of remoteRecords) {
+    if (!rem || !rem.studentId) continue;
+    const key = makeKey(rem);
+    const existing = map.get(key);
+
+    if (!existing) {
+      map.set(key, { ...rem });
+    } else {
+      // Intelligently merge: preserve timeOut, status, and photos
+      map.set(key, {
+        ...existing,
+        ...rem,
+        id: existing.id || rem.id,
+        timeIn: existing.timeIn || rem.timeIn,
+        timeOut: existing.timeOut || rem.timeOut,
+        status: existing.timeOut ? existing.status : (rem.status || existing.status),
+        syncedToSheets: existing.syncedToSheets || rem.syncedToSheets
+      });
+    }
+  }
+
+  return Array.from(map.values()).sort((a, b) => {
+    const tA = a.timeIn || '';
+    const tB = b.timeIn || '';
+    return tB.localeCompare(tA);
+  });
+}
+
+/**
+ * Log attendance record to Supabase with resilient conflict handling and auto-healing parent foreign keys
  */
 export async function logAttendanceToSupabase(record: AttendanceRecord): Promise<boolean> {
   const supabase = getSupabase();
   if (!supabase) return false;
 
+  const payload = {
+    id: record.id,
+    student_id: record.studentId,
+    student_name: record.studentName,
+    program: record.program,
+    year_level: record.yearLevel,
+    event_id: record.eventId,
+    event_name: record.eventName,
+    date: record.date,
+    time_in: record.timeIn,
+    time_out: record.timeOut || null,
+    status: record.status,
+    photo: record.photo,
+    synced_to_sheets: record.syncedToSheets ?? false
+  };
+
   try {
-    const { error } = await supabase.from('attendance_records').upsert({
-      id: record.id,
-      student_id: record.studentId,
-      student_name: record.studentName,
-      program: record.program,
-      year_level: record.yearLevel,
-      event_id: record.eventId,
-      event_name: record.eventName,
-      date: record.date,
-      time_in: record.timeIn,
-      time_out: record.timeOut || null,
-      status: record.status,
-      photo: record.photo,
-      synced_to_sheets: record.syncedToSheets ?? false
-    }, { onConflict: 'id' });
+    // 1. First attempt: onConflict: 'student_id,event_id' (handles session uniqueness)
+    let { error } = await supabase.from('attendance_records').upsert(payload, { 
+      onConflict: 'student_id,event_id' 
+    });
+
+    // 2. Fallback if conflict target 'student_id,event_id' is not supported: use 'id'
+    if (error && (error.code === '42P10' || error.message?.includes('conflict'))) {
+      const res = await supabase.from('attendance_records').upsert(payload, { 
+        onConflict: 'id' 
+      });
+      error = res.error;
+    }
+
+    // 3. Auto-heal foreign key violations: If student or event does not exist in Supabase yet,
+    // automatically upsert the parent records first, then retry the attendance insert!
+    if (error && (error.code === '23503' || error.message?.toLowerCase().includes('foreign key'))) {
+      console.info('Auto-healing parent foreign key relationships in Supabase for student:', record.studentId);
+
+      // Ensure student exists in students table
+      await supabase.from('students').upsert({
+        id: record.studentId,
+        name: record.studentName,
+        program: record.program || 'BS Computer Science',
+        year_level: record.yearLevel || '1st Year',
+        role: 'Active Member',
+        photo: record.photo || './default_avatar.jpg'
+      }, { onConflict: 'id' });
+
+      // Ensure event exists in events table
+      await supabase.from('events').upsert({
+        id: record.eventId,
+        title: record.eventName || 'General Assembly & Tech Symposium 2026',
+        date: record.date || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        start_time: '08:00 AM',
+        end_time: '12:00 PM',
+        venue: 'University of Bohol',
+        late_threshold: '08:30 AM',
+        status: 'Active'
+      }, { onConflict: 'id' });
+
+      // Retry attendance record upsert
+      const retry = await supabase.from('attendance_records').upsert(payload, { 
+        onConflict: 'student_id,event_id' 
+      });
+      if (!retry.error) return true;
+
+      const retryId = await supabase.from('attendance_records').upsert(payload, { 
+        onConflict: 'id' 
+      });
+      if (!retryId.error) return true;
+      throw retryId.error;
+    }
 
     if (error) throw error;
     return true;
   } catch (err) {
     console.error('Failed to log attendance to Supabase:', err);
     return false;
+  }
+}
+
+/**
+ * Sync local attendance records to Supabase in bulk
+ */
+export async function syncLocalAttendanceToSupabase(records: AttendanceRecord[]): Promise<{ count: number; error?: string }> {
+  const supabase = getSupabase();
+  if (!supabase) return { count: 0, error: 'Supabase is not configured' };
+  if (!records || records.length === 0) return { count: 0 };
+
+  try {
+    let successCount = 0;
+    for (const r of records) {
+      const ok = await logAttendanceToSupabase(r);
+      if (ok) successCount++;
+    }
+    return { count: successCount };
+  } catch (err: any) {
+    return { count: 0, error: err?.message || 'Failed to sync attendance records' };
   }
 }
 

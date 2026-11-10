@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { 
   getSupabaseSettings, saveSupabaseSettings, testSupabaseConnection, 
-  syncLocalStudentsToSupabase, isSupabaseConfigured 
+  syncLocalStudentsToSupabase, syncLocalAttendanceToSupabase, isSupabaseConfigured 
 } from '../services/supabaseClient';
 import { 
   getGoogleSheetsSettings, saveGoogleSheetsSettings, 
@@ -41,6 +41,8 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
   });
   const [isSyncingStudents, setIsSyncingStudents] = useState(false);
   const [studentSyncResult, setStudentSyncResult] = useState<string | null>(null);
+  const [isSyncingAttendance, setIsSyncingAttendance] = useState(false);
+  const [attendanceSyncResult, setAttendanceSyncResult] = useState<string | null>(null);
 
   // Google Sheets Form State
   const [sheetsUrl, setSheetsUrl] = useState('');
@@ -93,6 +95,19 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
       setStudentSyncResult(`Error: ${res.error}`);
     } else {
       setStudentSyncResult(`Successfully pushed ${res.count} BSCS students to Supabase!`);
+    }
+  };
+
+  // Handler: Sync Local Attendance to Supabase
+  const handleSyncAttendance = async () => {
+    setIsSyncingAttendance(true);
+    setAttendanceSyncResult(null);
+    const res = await syncLocalAttendanceToSupabase(attendanceRecords);
+    setIsSyncingAttendance(false);
+    if (res.error) {
+      setAttendanceSyncResult(`Error: ${res.error}`);
+    } else {
+      setAttendanceSyncResult(`Successfully pushed ${res.count} attendance records to Supabase!`);
     }
   };
 
@@ -305,7 +320,16 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                     className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider text-xs btn-subtle"
                   >
                     {isSyncingStudents ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                    <span>Push {students.length} Students to Supabase</span>
+                    <span>Push {students.length} Students</span>
+                  </button>
+
+                  <button
+                    onClick={handleSyncAttendance}
+                    disabled={isSyncingAttendance || !isSbActive || attendanceRecords.length === 0}
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider text-xs btn-subtle"
+                  >
+                    {isSyncingAttendance ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    <span>Push {attendanceRecords.length} Attendance to Cloud</span>
                   </button>
                 </div>
 
@@ -328,6 +352,12 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                 {studentSyncResult && (
                   <div className="p-3 bg-blue-50 border border-blue-200 text-blue-900 rounded-xl text-xs font-semibold">
                     {studentSyncResult}
+                  </div>
+                )}
+
+                {attendanceSyncResult && (
+                  <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-xs font-semibold">
+                    {attendanceSyncResult}
                   </div>
                 )}
               </div>
