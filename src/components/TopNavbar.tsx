@@ -31,7 +31,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
       
       {/* LEFT: Brand Identity */}
       <div 
-        className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0 cursor-pointer group" 
+        className="flex items-center gap-3 sm:gap-3.5 md:gap-4 flex-shrink-0 cursor-pointer group" 
         onClick={() => setActiveView('kiosk')}
         title="University of Bohol - Young Thinkers Society"
       >
@@ -44,13 +44,13 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
             }
           }}
           alt="Young Thinkers Society Logo"
-          className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 object-contain drop-shadow-md group-hover:scale-105 transition-transform flex-shrink-0"
+          className="w-11 h-11 sm:w-12 sm:h-12 md:w-13 md:h-13 object-contain drop-shadow-md group-hover:scale-105 transition-transform flex-shrink-0"
         />
-        <div className="flex flex-col justify-center leading-tight">
-          <span className="font-sans text-[10px] sm:text-xs md:text-[13px] font-medium tracking-[0.14em] sm:tracking-[0.18em] text-white/95 uppercase leading-none select-none">
+        <div className="flex flex-col justify-center items-start leading-none font-montserrat">
+          <span className="font-montserrat text-[11px] sm:text-xs md:text-[13.5px] lg:text-[14px] font-normal tracking-[0.16em] sm:tracking-[0.18em] text-white uppercase leading-none select-none">
             UNIVERSITY OF BOHOL
           </span>
-          <h1 className="font-sans text-sm sm:text-lg md:text-xl lg:text-[22px] font-extrabold tracking-tight text-white uppercase leading-none mt-1 sm:mt-1.5 drop-shadow-sm select-none">
+          <h1 className="font-montserrat text-base sm:text-xl md:text-2xl lg:text-[25px] font-extrabold tracking-tight text-white uppercase leading-none mt-1 sm:mt-1.5 drop-shadow-sm select-none">
             YOUNG THINKERS SOCIETY
           </h1>
         </div>

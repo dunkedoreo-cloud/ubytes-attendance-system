@@ -29,6 +29,7 @@ export default {
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        montserrat: ['"Montserrat"', 'sans-serif'],
         display: ['"Bebas Neue"', 'sans-serif'],
         condensed: ['"Oswald"', 'sans-serif'],
         banner: ['"Bebas Neue"', 'sans-serif'],
