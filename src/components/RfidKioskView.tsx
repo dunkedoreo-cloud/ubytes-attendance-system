@@ -814,12 +814,13 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
               <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0 rounded-xl border border-slate-100 shadow-2xs bg-white">
                 <table className="w-full text-xs text-slate-600 table-fixed">
                   <colgroup>
+                    <col style={{ width: '15%' }} />
+                    <col style={{ width: '31%' }} />
+                    <col style={{ width: '9%' }} />
+                    <col style={{ width: '12%' }} />
                     <col style={{ width: '16%' }} />
-                    <col style={{ width: '35%' }} />
-                    <col style={{ width: '10%' }} />
-                    <col style={{ width: '13%' }} />
-                    <col style={{ width: '13%' }} />
-                    <col style={{ width: '13%' }} />
+                    <col style={{ width: '12%' }} />
+                    <col style={{ width: '5%' }} />
                   </colgroup>
                   <thead className="bg-slate-50 sticky top-0 text-[10px] font-condensed font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 shadow-2xs z-10">
                     <tr>
@@ -827,8 +828,9 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                       <th className="py-2 pl-3 pr-2 text-left whitespace-nowrap">Student Name</th>
                       <th className="py-2 px-1 text-center whitespace-nowrap">Year</th>
                       <th className="py-2 px-1 text-center whitespace-nowrap">Time In</th>
-                      <th className="py-2 px-1 text-center whitespace-nowrap">Time Out</th>
-                      <th className="py-2 px-1 text-center whitespace-nowrap">Status</th>
+                      <th className="py-2 px-2 text-center whitespace-nowrap">Time Out</th>
+                      <th className="py-2 px-2 text-center whitespace-nowrap">Status</th>
+                      <th className="py-2 pr-2 text-center whitespace-nowrap w-8"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-medium">
@@ -874,18 +876,18 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                             {activeSession.attendanceMode === 'out_only' ? (row.timeIn || '—') : row.timeIn}
                           </td>
 
-                          {/* Time Out - Centered */}
-                          <td className="py-2 px-1 font-mono text-[11px] text-center align-middle whitespace-nowrap tabular-nums">
+                          {/* Time Out - Centered with generous margin */}
+                          <td className="py-2 px-2 font-mono text-[11px] text-center align-middle whitespace-nowrap tabular-nums">
                             {activeSession.attendanceMode === 'in_only' ? (
-                              <span className="inline-flex items-center justify-center min-w-[70px] text-slate-400 bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded-md text-[10px] font-medium">
+                              <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-medium text-slate-400 bg-slate-50 border border-slate-200/60 min-w-[54px]">
                                 —
                               </span>
                             ) : row.timeOut ? (
-                              <span className="inline-flex items-center justify-center min-w-[70px] text-blue-700 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md text-[10px] whitespace-nowrap">
+                              <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 whitespace-nowrap min-w-[62px]">
                                 {row.timeOut}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center justify-center min-w-[70px] text-emerald-600 italic text-[10px] gap-1 bg-emerald-50/70 px-2 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap">
+                              <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] gap-1 text-emerald-600 bg-emerald-50/70 border border-emerald-200/80 italic whitespace-nowrap min-w-[66px]">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                 In Session
                               </span>
@@ -893,14 +895,14 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                           </td>
 
                           {/* Status - Centered Pill Badge */}
-                          <td className="py-2 px-1 text-center align-middle whitespace-nowrap relative">
+                          <td className="py-2 px-2 text-center align-middle whitespace-nowrap">
                             <div className="flex items-center justify-center">
                               {activeSession.attendanceMode === 'out_only' || row.timeOut ? (
-                                <span className="inline-flex items-center justify-center min-w-[64px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs whitespace-nowrap">
+                                <span className="inline-flex items-center justify-center min-w-[60px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs whitespace-nowrap">
                                   CHECKED OUT
                                 </span>
                               ) : (
-                                <span className={`inline-flex items-center justify-center min-w-[58px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider shadow-2xs whitespace-nowrap ${
+                                <span className={`inline-flex items-center justify-center min-w-[50px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider shadow-2xs whitespace-nowrap ${
                                   row.status === 'On-Time'
                                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                     : 'bg-amber-50 text-amber-700 border border-amber-200'
@@ -909,8 +911,10 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                                 </span>
                               )}
                             </div>
+                          </td>
 
-                            {/* Subtle Delete Record Action Button */}
+                          {/* Action - Dedicated Delete Button Column (Never overlaps Status badge) */}
+                          <td className="py-2 pr-2 text-center align-middle whitespace-nowrap w-8">
                             {onDeleteAttendanceRecord && (
                               <button
                                 type="button"
@@ -919,10 +923,10 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                                   playWarningBeep();
                                   setRecordToDelete(row);
                                 }}
-                                className={`transition-all duration-150 absolute right-1.5 top-1/2 -translate-y-1/2 p-1 rounded-md shadow-2xs border cursor-pointer z-10 ${
+                                className={`transition-all duration-150 p-1 rounded-md border cursor-pointer ${
                                   recordToDelete?.id === row.id
-                                    ? 'opacity-100 text-red-700 bg-red-100 border-red-300 ring-2 ring-red-400'
-                                    : 'opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-600 hover:bg-red-50 bg-white/95 border-slate-200/60'
+                                    ? 'opacity-100 text-red-700 bg-red-100 border-red-300 ring-2 ring-red-400 shadow-xs'
+                                    : 'opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-600 hover:bg-red-50 bg-white border-slate-200 shadow-2xs'
                                 }`}
                                 title={`Delete attendance record for ${row.studentName}`}
                               >
@@ -934,7 +938,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={6} className="py-8 text-center text-slate-400 text-xs">
+                        <td colSpan={7} className="py-8 text-center text-slate-400 text-xs">
                           No students recorded yet. Tap an RFID card to check in.
                         </td>
                       </tr>
