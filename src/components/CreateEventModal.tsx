@@ -210,15 +210,15 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
                       <span className="text-slate-300">•</span>
                       <span className="whitespace-nowrap flex-shrink-0">
                         {evt.attendanceMode === 'in_only' ? (
-                          <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">
+                          <span className="text-[9px] font-bold text-amber-900 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded">
                             Time In Only
                           </span>
                         ) : evt.attendanceMode === 'out_only' ? (
-                          <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.2 rounded">
+                          <span className="text-[9px] font-bold text-ubytes-maroon-800 bg-red-50 border border-red-200 px-1.5 py-0.2 rounded">
                             Time Out Only
                           </span>
                         ) : (
-                          <span className="text-[9px] font-bold text-ubytes-maroon-800 bg-red-50 border border-red-200 px-1.5 py-0.2 rounded">
+                          <span className="text-[9px] font-bold text-ubytes-maroon-900 bg-amber-50/90 border border-ubytes-amber-300 px-1.5 py-0.2 rounded">
                             In & Out
                           </span>
                         )}
@@ -397,17 +397,17 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
                   onClick={() => setAttendanceMode('in_only')}
                   className={`p-2.5 rounded-xl border text-left transition-all btn-subtle cursor-pointer flex flex-col justify-between ${
                     attendanceMode === 'in_only'
-                      ? 'border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500 shadow-2xs'
+                      ? 'border-ubytes-maroon-800 bg-amber-50/70 ring-2 ring-ubytes-amber-500 shadow-2xs'
                       : 'border-slate-200 hover:border-slate-300 bg-white'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-xs text-emerald-900 flex items-center gap-1.5">
-                      <LogIn className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="font-bold text-xs text-ubytes-maroon-950 flex items-center gap-1.5">
+                      <LogIn className="w-3.5 h-3.5 text-ubytes-maroon-800" />
                       Time In Only
                     </span>
                     {attendanceMode === 'in_only' && (
-                      <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+                      <span className="w-2 h-2 rounded-full bg-ubytes-maroon-800"></span>
                     )}
                   </div>
                   <p className="text-[10px] text-slate-500 leading-tight">
@@ -420,17 +420,17 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
                   onClick={() => setAttendanceMode('out_only')}
                   className={`p-2.5 rounded-xl border text-left transition-all btn-subtle cursor-pointer flex flex-col justify-between ${
                     attendanceMode === 'out_only'
-                      ? 'border-blue-600 bg-blue-50/70 ring-2 ring-blue-500 shadow-2xs'
+                      ? 'border-ubytes-maroon-800 bg-amber-50/70 ring-2 ring-ubytes-amber-500 shadow-2xs'
                       : 'border-slate-200 hover:border-slate-300 bg-white'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-xs text-blue-900 flex items-center gap-1.5">
-                      <LogOut className="w-3.5 h-3.5 text-blue-600" />
+                    <span className="font-bold text-xs text-ubytes-maroon-950 flex items-center gap-1.5">
+                      <LogOut className="w-3.5 h-3.5 text-ubytes-maroon-800" />
                       Time Out Only
                     </span>
                     {attendanceMode === 'out_only' && (
-                      <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                      <span className="w-2 h-2 rounded-full bg-ubytes-maroon-800"></span>
                     )}
                   </div>
                   <p className="text-[10px] text-slate-500 leading-tight">
@@ -457,7 +457,7 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
               >
                 {editingEventId ? (
                   <>
-                    <Check className="w-4 h-4 text-emerald-400" />
+                    <Check className="w-4 h-4 text-ubytes-amber-400" />
                     <span>Save Event Changes</span>
                   </>
                 ) : (

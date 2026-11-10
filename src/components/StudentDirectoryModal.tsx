@@ -343,10 +343,10 @@ export const StudentDirectoryModal: React.FC<StudentDirectoryModalProps> = ({
 
           <div className="flex items-center gap-3">
             {/* Live Hardware Scanner Status Indicator */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-950/70 border border-emerald-500/40 rounded-xl text-xs text-emerald-300 shadow-sm" title="USB RFID Reader is active and listening for card tap">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-[#290306]/90 border border-ubytes-amber-500/40 rounded-xl text-xs text-ubytes-amber-300 shadow-sm" title="USB RFID Reader is active and listening for card tap">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ubytes-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-ubytes-amber-500"></span>
               </span>
               <span className="font-semibold tracking-wide">USB RFID Scanner Active</span>
             </div>
@@ -370,17 +370,17 @@ export const StudentDirectoryModal: React.FC<StudentDirectoryModalProps> = ({
                 scanFeedback.type === 'warning'
                   ? 'bg-amber-50 border-amber-300 text-amber-900'
                   : scanFeedback.type === 'info'
-                  ? 'bg-blue-50 border-blue-300 text-blue-900'
-                  : 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                  ? 'bg-slate-100 border-slate-300 text-slate-800'
+                  : 'bg-amber-50 border-amber-300 text-amber-950'
               }`}
             >
               <div className="flex items-center gap-2.5 text-xs">
                 {scanFeedback.type === 'warning' ? (
                   <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
                 ) : scanFeedback.type === 'info' ? (
-                  <Radio className="w-4 h-4 text-blue-600 flex-shrink-0 animate-pulse" />
+                  <Radio className="w-4 h-4 text-ubytes-maroon-800 flex-shrink-0 animate-pulse" />
                 ) : (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-ubytes-maroon-800 flex-shrink-0" />
                 )}
                 <div className="font-medium">
                   {scanFeedback.message}
@@ -582,8 +582,8 @@ export const StudentDirectoryModal: React.FC<StudentDirectoryModalProps> = ({
                           <Check className="w-3 h-3 text-blue-600" /> Re-linked
                         </span>
                       ) : editRfid ? (
-                        <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded flex items-center gap-1">
-                          <Check className="w-3 h-3 text-emerald-600" /> Linked
+                        <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded flex items-center gap-1">
+                          <Check className="w-3 h-3 text-ubytes-maroon-800" /> Linked
                         </span>
                       ) : (
                         <span className="text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded">
@@ -660,15 +660,15 @@ export const StudentDirectoryModal: React.FC<StudentDirectoryModalProps> = ({
               )}
 
               {/* Active Scanner Status Pill */}
-              <div className="p-2.5 bg-emerald-50/90 border border-emerald-300 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-xs">
-                <div className="flex items-center gap-2 text-xs text-emerald-900 font-semibold">
+              <div className="p-2.5 bg-amber-50/80 border border-amber-200/90 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-xs">
+                <div className="flex items-center gap-2 text-xs text-amber-950 font-semibold">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ubytes-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-ubytes-amber-500"></span>
                   </span>
                   <span>USB RFID Scanner Active</span>
                 </div>
-                <span className="text-[11px] text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-lg border border-emerald-300 font-medium">
+                <span className="text-[11px] text-amber-900 bg-amber-100/70 px-2 py-0.5 rounded-lg border border-amber-300/80 font-medium">
                   Tap student ID card on USB reader to extract UID
                 </span>
               </div>
@@ -734,14 +734,14 @@ export const StudentDirectoryModal: React.FC<StudentDirectoryModalProps> = ({
                       onChange={(e) => setNewRfid(e.target.value)}
                       className={`w-full pl-3 pr-24 py-1.5 bg-white border rounded-lg text-xs font-mono font-bold tracking-wider transition-all focus:outline-none ${
                         newRfid 
-                          ? 'border-emerald-400 bg-emerald-50/40 text-emerald-950 ring-2 ring-emerald-400/30' 
+                          ? 'border-ubytes-amber-500 bg-amber-50/40 text-amber-950 ring-2 ring-ubytes-amber-400/30' 
                           : 'border-slate-300 text-slate-700 focus:ring-2 focus:ring-ubytes-amber-500'
                       }`}
                     />
                     <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
                       {newRfid ? (
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-300">
-                          <Check className="w-3 h-3 text-emerald-600" /> Scanned
+                        <span className="text-[10px] font-bold text-amber-900 bg-amber-100 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-amber-300">
+                          <Check className="w-3 h-3 text-ubytes-maroon-800" /> Scanned
                         </span>
                       ) : (
                         <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">

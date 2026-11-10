@@ -230,13 +230,13 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
         <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold font-condensed uppercase tracking-wider flex-shrink-0 self-start md:self-auto">
           <span className="text-[10px] text-slate-400 px-2 uppercase font-mono">MODE:</span>
           {activeSession.attendanceMode === 'in_only' ? (
-            <span className="px-3 py-1 rounded-lg bg-emerald-600 text-white shadow-xs flex items-center gap-1.5 font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            <span className="px-3 py-1 rounded-lg bg-ubytes-maroon-800 text-white shadow-xs flex items-center gap-1.5 font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-ubytes-amber-400 animate-pulse"></span>
               Time In Only
             </span>
           ) : activeSession.attendanceMode === 'out_only' ? (
-            <span className="px-3 py-1 rounded-lg bg-blue-600 text-white shadow-xs flex items-center gap-1.5 font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            <span className="px-3 py-1 rounded-lg bg-ubytes-maroon-800 text-white shadow-xs flex items-center gap-1.5 font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-ubytes-amber-400 animate-pulse"></span>
               Time Out Only
             </span>
           ) : (
@@ -244,9 +244,9 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
               <button
                 type="button"
                 onClick={() => setStationMode('auto')}
-                className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-bold ${
                   stationMode === 'auto'
-                    ? 'bg-ubytes-maroon-900 text-white shadow-sm'
+                    ? 'bg-ubytes-maroon-800 text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -255,9 +255,9 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
               <button
                 type="button"
                 onClick={() => setStationMode('in')}
-                className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-bold ${
                   stationMode === 'in'
-                    ? 'bg-emerald-600 text-white shadow-sm'
+                    ? 'bg-ubytes-maroon-800 text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -266,9 +266,9 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
               <button
                 type="button"
                 onClick={() => setStationMode('out')}
-                className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-bold ${
                   stationMode === 'out'
-                    ? 'bg-blue-600 text-white shadow-sm'
+                    ? 'bg-ubytes-maroon-800 text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -291,13 +291,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
           </div>
           <button
             type="submit"
-            className={`btn-subtle active:scale-[0.97] px-4 py-2 text-white rounded-xl font-bold font-condensed tracking-wider uppercase text-xs shadow transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${
-              activeSession.attendanceMode === 'out_only' || stationMode === 'out'
-                ? 'bg-blue-600 hover:bg-blue-700'
-                : activeSession.attendanceMode === 'in_only' || stationMode === 'in'
-                ? 'bg-emerald-600 hover:bg-emerald-700'
-                : 'bg-ubytes-maroon-900 hover:bg-ubytes-maroon-950'
-            }`}
+            className="btn-subtle active:scale-[0.97] px-4 py-2 text-white rounded-xl font-bold font-condensed tracking-wider uppercase text-xs shadow transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer bg-ubytes-maroon-800 hover:bg-ubytes-maroon-900"
           >
             <CreditCard className="w-3.5 h-3.5 text-ubytes-amber-400" />
             <span>
@@ -315,9 +309,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
         </form>
 
         <div className="hidden xl:flex items-center gap-2 text-slate-400 font-condensed text-[11px] border-l border-slate-200 pl-3 flex-shrink-0">
-          <span className={`w-2 h-2 rounded-full animate-pulse ${
-            stationMode === 'out' ? 'bg-blue-500' : 'bg-emerald-500'
-          }`}></span>
+          <span className="w-2 h-2 rounded-full animate-pulse bg-ubytes-amber-500"></span>
           <span>RFID Reader ({stationMode.toUpperCase()})</span>
         </div>
       </div>
@@ -394,7 +386,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
               </div>
               <div className="p-2 rounded-lg bg-slate-50 border border-slate-200">
                 <span className="text-slate-400 block text-[9px] uppercase font-bold">Status</span>
-                <span className={`font-bold ${recordToDelete.status === 'On-Time' ? 'text-emerald-700' : 'text-amber-700'}`}>
+                <span className={`font-bold ${recordToDelete.status === 'On-Time' ? 'text-amber-800' : 'text-red-700'}`}>
                   {recordToDelete.status}
                 </span>
               </div>
@@ -503,8 +495,8 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
 
       {/* Success Notification Mini Tab */}
       {deleteToast && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 text-white px-4 py-2 rounded-2xl shadow-xl border border-emerald-500/40 flex items-center gap-2 text-xs font-semibold mini-tab-popout backdrop-blur-sm">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 text-white px-4 py-2 rounded-2xl shadow-xl border border-ubytes-amber-500/40 flex items-center gap-2 text-xs font-semibold mini-tab-popout backdrop-blur-sm">
+          <CheckCircle2 className="w-4 h-4 text-ubytes-amber-400" />
           <span>{deleteToast}</span>
         </div>
       )}
@@ -561,11 +553,6 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                   STUDENT PROFILE
                 </h3>
               </div>
-
-              <span className="text-[11px] bg-emerald-50 text-emerald-700 font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider whitespace-nowrap">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Scanner Ready
-              </span>
             </div>
 
             {/* Content Body */}
@@ -588,7 +575,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                       />
                     </div>
                     <div className={`absolute -bottom-1 -right-1 p-0.5 rounded-full shadow border-2 border-white text-white ${
-                      lastScannedRecord?.status === 'On-Time' ? 'bg-emerald-500' : 'bg-amber-500'
+                      lastScannedRecord?.status === 'On-Time' ? 'bg-ubytes-amber-500' : 'bg-red-500'
                     }`}>
                       <CheckCircle2 className="w-3 h-3" />
                     </div>
@@ -633,15 +620,15 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                 {/* Bottom Verification Status & Timestamps */}
                 <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 flex-shrink-0">
                   {activeSession.attendanceMode === 'out_only' || lastScannedRecord?.timeOut ? (
-                    <span className="text-[11px] font-black font-condensed tracking-wider px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 bg-blue-600 text-white">
+                    <span className="text-[11px] font-black font-condensed tracking-wider px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 bg-slate-800 text-white">
                       <LogOut className="w-3 h-3" />
                       CHECKED OUT
                     </span>
                   ) : (
                     <span className={`text-[11px] font-black font-condensed tracking-wider px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 ${
                       lastScannedRecord?.status === 'On-Time'
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-amber-500 text-white'
+                        ? 'bg-ubytes-amber-500 text-ubytes-maroon-950'
+                        : 'bg-ubytes-maroon-800 text-white'
                     }`}>
                       <CheckCircle2 className="w-3 h-3" />
                       {lastScannedRecord?.status.toUpperCase() || 'CHECKED IN'}
@@ -675,7 +662,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                           <span className="text-[9px] font-condensed font-bold text-slate-400 uppercase tracking-wider">
                             OUT:
                           </span>
-                          <span className="font-condensed italic text-[11px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                          <span className="font-condensed italic text-[11px] text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                             Active
                           </span>
                         </div>
@@ -730,11 +717,11 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                   <p className="text-xs text-slate-400 mt-0.5 truncate max-w-xs flex items-center gap-1.5">
                     <span className="truncate">Session: <strong className="text-slate-700">{activeSession.title}</strong></span>
                     {activeSession.attendanceMode === 'in_only' ? (
-                      <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded uppercase flex-shrink-0">
+                      <span className="text-[9px] font-bold text-amber-900 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded uppercase flex-shrink-0">
                         In Only
                       </span>
                     ) : activeSession.attendanceMode === 'out_only' ? (
-                      <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.2 rounded uppercase flex-shrink-0">
+                      <span className="text-[9px] font-bold text-ubytes-maroon-800 bg-red-50 border border-red-200 px-1.5 py-0.2 rounded uppercase flex-shrink-0">
                         Out Only
                       </span>
                     ) : null}
@@ -744,25 +731,25 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                 {/* Counters */}
                 <div className="flex items-center gap-1.5 flex-shrink-0">
                   {activeSession.attendanceMode === 'in_only' ? (
-                    <div className="text-center px-2 py-0.5 bg-emerald-50 border border-emerald-200 rounded-lg">
-                      <span className="text-[9px] font-condensed font-bold text-emerald-600 uppercase block">Checked In</span>
-                      <span className="font-display text-base lg:text-lg text-emerald-700 leading-none">{sessionRecords.length}</span>
+                    <div className="text-center px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-lg">
+                      <span className="text-[9px] font-condensed font-bold text-amber-700 uppercase block">Checked In</span>
+                      <span className="font-display text-base lg:text-lg text-amber-900 leading-none">{sessionRecords.length}</span>
                     </div>
                   ) : activeSession.attendanceMode === 'out_only' ? (
-                    <div className="text-center px-2 py-0.5 bg-blue-50 border border-blue-200 rounded-lg">
-                      <span className="text-[9px] font-condensed font-bold text-blue-600 uppercase block">Timed Out</span>
-                      <span className="font-display text-base lg:text-lg text-blue-700 leading-none">{timedOutCount}</span>
+                    <div className="text-center px-2 py-0.5 bg-slate-100 border border-slate-200 rounded-lg">
+                      <span className="text-[9px] font-condensed font-bold text-slate-600 uppercase block">Timed Out</span>
+                      <span className="font-display text-base lg:text-lg text-slate-800 leading-none">{timedOutCount}</span>
                     </div>
                   ) : (
                     <>
-                      <div className="text-center px-2 py-0.5 bg-emerald-50 border border-emerald-200 rounded-lg">
-                        <span className="text-[9px] font-condensed font-bold text-emerald-600 uppercase block">In-Session</span>
-                        <span className="font-display text-base lg:text-lg text-emerald-700 leading-none">{inSessionCount}</span>
+                      <div className="text-center px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-lg">
+                        <span className="text-[9px] font-condensed font-bold text-amber-700 uppercase block">In-Session</span>
+                        <span className="font-display text-base lg:text-lg text-amber-900 leading-none">{inSessionCount}</span>
                       </div>
 
-                      <div className="text-center px-2 py-0.5 bg-blue-50 border border-blue-200 rounded-lg">
-                        <span className="text-[9px] font-condensed font-bold text-blue-600 uppercase block">Timed Out</span>
-                        <span className="font-display text-base lg:text-lg text-blue-700 leading-none">{timedOutCount}</span>
+                      <div className="text-center px-2 py-0.5 bg-slate-100 border border-slate-200 rounded-lg">
+                        <span className="text-[9px] font-condensed font-bold text-slate-600 uppercase block">Timed Out</span>
+                        <span className="font-display text-base lg:text-lg text-slate-800 leading-none">{timedOutCount}</span>
                       </div>
                     </>
                   )}
@@ -811,16 +798,16 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
               </div>
 
               {/* Scrollable Table */}
-              <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0 rounded-xl border border-slate-100 shadow-2xs bg-white">
-                <table className="w-full text-xs text-slate-600 table-fixed">
+              <div className="overflow-y-auto overflow-x-auto flex-1 min-h-0 rounded-xl border border-slate-100 shadow-2xs bg-white">
+                <table className="w-full text-xs text-slate-600 table-fixed min-w-[560px]">
                   <colgroup>
                     <col style={{ width: '15%' }} />
-                    <col style={{ width: '31%' }} />
-                    <col style={{ width: '9%' }} />
-                    <col style={{ width: '12%' }} />
+                    <col style={{ width: '29%' }} />
+                    <col style={{ width: '8%' }} />
+                    <col style={{ width: '13%' }} />
                     <col style={{ width: '16%' }} />
-                    <col style={{ width: '12%' }} />
-                    <col style={{ width: '5%' }} />
+                    <col style={{ width: '13%' }} />
+                    <col style={{ width: '6%' }} />
                   </colgroup>
                   <thead className="bg-slate-50 sticky top-0 text-[10px] font-condensed font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 shadow-2xs z-10">
                     <tr>
@@ -830,7 +817,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                       <th className="py-2 px-1 text-center whitespace-nowrap">Time In</th>
                       <th className="py-2 px-2 text-center whitespace-nowrap">Time Out</th>
                       <th className="py-2 px-2 text-center whitespace-nowrap">Status</th>
-                      <th className="py-2 pr-2 text-center whitespace-nowrap w-8"></th>
+                      <th className="py-2 px-1 text-center whitespace-nowrap"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-medium">
@@ -883,29 +870,29 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                                 —
                               </span>
                             ) : row.timeOut ? (
-                              <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 whitespace-nowrap min-w-[62px]">
+                              <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 whitespace-nowrap min-w-[62px]">
                                 {row.timeOut}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] gap-1 text-emerald-600 bg-emerald-50/70 border border-emerald-200/80 italic whitespace-nowrap min-w-[66px]">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                              <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] gap-1 text-slate-600 bg-slate-100 border border-slate-200/90 italic whitespace-nowrap min-w-[62px]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-ubytes-amber-500 animate-pulse"></span>
                                 In Session
                               </span>
                             )}
                           </td>
 
                           {/* Status - Centered Pill Badge */}
-                          <td className="py-2 px-2 text-center align-middle whitespace-nowrap">
+                          <td className="py-2 px-1 text-center align-middle whitespace-nowrap">
                             <div className="flex items-center justify-center">
                               {activeSession.attendanceMode === 'out_only' || row.timeOut ? (
-                                <span className="inline-flex items-center justify-center min-w-[60px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs whitespace-nowrap">
+                                <span className="inline-flex items-center justify-center min-w-[56px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs whitespace-nowrap">
                                   CHECKED OUT
                                 </span>
                               ) : (
-                                <span className={`inline-flex items-center justify-center min-w-[50px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider shadow-2xs whitespace-nowrap ${
+                                <span className={`inline-flex items-center justify-center min-w-[46px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider shadow-2xs whitespace-nowrap ${
                                   row.status === 'On-Time'
-                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                    : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                    ? 'bg-amber-50 text-amber-900 border border-amber-200'
+                                    : 'bg-red-50 text-red-800 border border-red-200'
                                 }`}>
                                   {row.status}
                                 </span>
@@ -914,7 +901,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                           </td>
 
                           {/* Action - Dedicated Delete Button Column (Never overlaps Status badge) */}
-                          <td className="py-2 pr-2 text-center align-middle whitespace-nowrap w-8">
+                          <td className="py-2 px-1 text-center align-middle whitespace-nowrap">
                             {onDeleteAttendanceRecord && (
                               <button
                                 type="button"
@@ -923,7 +910,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                                   playWarningBeep();
                                   setRecordToDelete(row);
                                 }}
-                                className={`transition-all duration-150 p-1 rounded-md border cursor-pointer ${
+                                className={`inline-flex items-center justify-center transition-all duration-150 p-1 rounded-md border cursor-pointer ${
                                   recordToDelete?.id === row.id
                                     ? 'opacity-100 text-red-700 bg-red-100 border-red-300 ring-2 ring-red-400 shadow-xs'
                                     : 'opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-600 hover:bg-red-50 bg-white border-slate-200 shadow-2xs'
@@ -951,7 +938,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
             {/* Footer */}
             <div className="pt-2 mt-1 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-condensed flex-shrink-0">
               <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span className="w-2 h-2 rounded-full bg-ubytes-amber-500"></span>
                 Listening to USB RFID reader
               </span>
               <span>Showing <strong>{filteredRecords.length}</strong> of <strong>{sessionRecords.length}</strong></span>
@@ -968,10 +955,6 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                 <span className="w-2.5 h-2.5 rounded-full bg-ubytes-amber-500"></span>
                 <h3 className="font-display tracking-wider text-slate-900 text-lg sm:text-xl">STUDENT PROFILE</h3>
               </div>
-              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1 font-condensed uppercase tracking-wider">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Scanner Ready
-              </span>
             </div>
 
             {lastScannedStudent ? (
@@ -1005,14 +988,14 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                   </span>
                   <div>
                     {lastScannedRecord?.timeOut ? (
-                      <span className="text-blue-700 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[11px]">
+                      <span className="text-slate-700 font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-[11px]">
                         Checked Out
                       </span>
                     ) : (
                       <span className={`font-bold px-2 py-0.5 rounded text-[11px] ${
                         lastScannedRecord?.status === 'On-Time' 
-                          ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' 
-                          : 'text-amber-700 bg-amber-50 border border-amber-200'
+                          ? 'text-amber-900 bg-amber-50 border border-amber-200' 
+                          : 'text-red-800 bg-red-50 border border-red-200'
                       }`}>
                         {lastScannedRecord?.status || 'On-Time'}
                       </span>
@@ -1087,23 +1070,23 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                             —
                           </span>
                         ) : r.timeOut ? (
-                          <span className="inline-flex items-center justify-center min-w-[64px] text-blue-700 font-bold bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md text-[10px]">
+                          <span className="inline-flex items-center justify-center min-w-[64px] text-slate-700 font-bold bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md text-[10px]">
                             {r.timeOut}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center justify-center min-w-[64px] text-emerald-600 italic text-[10px] bg-emerald-50/70 border border-emerald-200/80 px-1.5 py-0.5 rounded-md">
+                          <span className="inline-flex items-center justify-center min-w-[64px] text-slate-600 italic text-[10px] bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md">
                             In Session
                           </span>
                         )}
                       </td>
                       <td className="p-2 text-center whitespace-nowrap">
                         {activeSession.attendanceMode === 'out_only' || r.timeOut ? (
-                          <span className="inline-flex items-center justify-center min-w-[60px] px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                          <span className="inline-flex items-center justify-center min-w-[60px] px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
                             CHECKED OUT
                           </span>
                         ) : (
                           <span className={`inline-flex items-center justify-center min-w-[54px] px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                            r.status === 'On-Time' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                            r.status === 'On-Time' ? 'bg-amber-50 text-amber-900 border border-amber-200' : 'bg-red-50 text-red-800 border border-red-200'
                           }`}>
                             {r.status}
                           </span>

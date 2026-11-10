@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CreditCard, LayoutDashboard, Users, Calendar, Zap, Lock } from 'lucide-react';
 import { AdminUser } from '../types';
+import ubytesLogo from '../assets/ubytes_logo.png';
 
 interface TopNavbarProps {
   activeView: 'kiosk' | 'dashboard';
@@ -36,11 +37,11 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         title="University of Bohol - Young Thinkers Society"
       >
         <img
-          src="./ubytes_logo.png"
+          src={ubytesLogo}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            if (!target.src.includes('public/ubytes_logo.png')) {
-              target.src = './public/ubytes_logo.png';
+            if (!target.src.includes('ubytes_logo')) {
+              target.src = './ubytes_logo.png';
             }
           }}
           alt="Young Thinkers Society Logo"
@@ -111,17 +112,17 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
             className="btn-subtle active:scale-[0.96] flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-amber-100/90 hover:text-white hover:bg-white/10 transition-all font-condensed tracking-wide"
             title="Supabase & Google Sheets Sync"
           >
-            <Zap className={`w-3.5 h-3.5 ${isCloudSyncActive ? 'text-emerald-400' : 'text-ubytes-amber-400'}`} />
+            <Zap className={`w-3.5 h-3.5 ${isCloudSyncActive ? 'text-ubytes-amber-400' : 'text-amber-200/70'}`} />
             <span className="hidden lg:inline">Cloud Sync</span>
             {isCloudSyncActive && (
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-ubytes-amber-400 animate-pulse"></span>
             )}
           </button>
         </div>
 
-        {/* RFID Scanner Status Pill */}
-        <div className="flex items-center gap-1.5 bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 px-2.5 py-1.5 rounded-xl shadow-sm text-xs font-condensed">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        {/* RFID Scanner Status Pill - UB Brand Palette */}
+        <div className="flex items-center gap-1.5 bg-[#290306]/90 border border-ubytes-amber-500/40 text-ubytes-amber-300 px-2.5 py-1.5 rounded-xl shadow-sm text-xs font-condensed">
+          <span className="w-2 h-2 rounded-full bg-ubytes-amber-400 animate-pulse"></span>
           <span className="font-bold tracking-wide uppercase hidden sm:inline">RFID Ready</span>
         </div>
 
@@ -138,7 +139,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
                 alt={currentUser.name}
                 className="w-8 h-8 rounded-full ring-2 ring-ubytes-amber-400/80 group-hover:ring-ubytes-amber-300 object-cover shadow transition-all"
               />
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#3d050a]"></span>
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-ubytes-amber-400 border-2 border-[#3d050a]"></span>
             </div>
             <div className="hidden xl:block text-left text-xs leading-none">
               <span className="font-bold block text-white font-condensed group-hover:text-ubytes-amber-300 transition-colors">

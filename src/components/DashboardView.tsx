@@ -188,7 +188,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <span className="font-semibold text-slate-700">{formattedDate}</span>
             <span>•</span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-semibold shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-ubytes-amber-500 animate-pulse"></span>
               {formattedTime}
             </span>
           </p>
@@ -245,7 +245,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-[11px] text-slate-500">
-            <span>Overall Activity: <strong className="text-emerald-600 font-bold font-condensed text-sm">{activeQuorumRate}%</strong></span>
+            <span>Overall Activity: <strong className="text-ubytes-maroon-800 font-bold font-condensed text-sm">{activeQuorumRate}%</strong></span>
             <span className="text-ubytes-maroon-800 font-bold font-condensed uppercase tracking-wider">Active Quorum</span>
           </div>
         </div>
@@ -274,10 +274,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
 
             <div className="h-3.5 w-full rounded-full overflow-hidden flex gap-1 p-0.5 bg-slate-100">
-              <div className="h-full bg-emerald-500 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct1, totalRegisteredStudents > 0 ? 3 : 0)}%` }} title={`1st Year (${pct1}%)`}></div>
-              <div className="h-full bg-ubytes-amber-500 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct2, totalRegisteredStudents > 0 ? 3 : 0)}%` }} title={`2nd Year (${pct2}%)`}></div>
-              <div className="h-full bg-ubytes-maroon-800 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct3, totalRegisteredStudents > 0 ? 3 : 0)}%` }} title={`3rd Year (${pct3}%)`}></div>
-              <div className="h-full bg-indigo-600 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct4, totalRegisteredStudents > 0 ? 3 : 0)}%` }} title={`4th Year (${pct4}%)`}></div>
+              <div className="h-full bg-amber-400 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct1, totalRegisteredStudents > 0 ? 3 : 0)}%` }} title={`1st Year (${pct1}%)`}></div>
+              <div className="h-full bg-ubytes-amber-600 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct2, totalRegisteredStudents > 0 ? 3 : 0)}%` }} title={`2nd Year (${pct2}%)`}></div>
+              <div className="h-full bg-ubytes-maroon-700 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct3, totalRegisteredStudents > 0 ? 3 : 0)}%` }} title={`3rd Year (${pct3}%)`}></div>
+              <div className="h-full bg-ubytes-maroon-950 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct4, totalRegisteredStudents > 0 ? 3 : 0)}%` }} title={`4th Year (${pct4}%)`}></div>
             </div>
           </div>
 
@@ -285,11 +285,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="space-y-2 text-xs pt-1">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
                 <span className="text-slate-600 font-medium">1st Year Freshmen</span>
               </div>
               <span className="font-bold text-slate-800 font-condensed tracking-wide">
-                {firstYears} Students <span className="text-emerald-600 ml-1 font-black">{pct1}%</span>
+                {firstYears} Students <span className="text-amber-700 ml-1 font-black">{pct1}%</span>
               </span>
             </div>
 
@@ -594,15 +594,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           </td>
                           <td className="py-2.5 px-3 whitespace-nowrap">
                             {row.timeOut ? (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-condensed font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200/50">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-condensed font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">
                                 • Checked Out
                               </span>
                             ) : (
                               <span
                                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-condensed font-bold uppercase tracking-wider ${
                                   row.status === 'On-Time'
-                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'
-                                    : 'bg-amber-50 text-amber-700 border border-amber-200/50'
+                                    ? 'bg-amber-50 text-amber-900 border border-amber-200'
+                                    : 'bg-red-50 text-red-800 border border-red-200'
                                 }`}
                               >
                                 • {row.status}

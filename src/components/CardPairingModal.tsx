@@ -91,8 +91,8 @@ export const CardPairingModal: React.FC<CardPairingModalProps> = ({
                   New RFID Card Scanned
                 </h3>
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ubytes-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-ubytes-amber-500"></span>
                 </span>
               </div>
               <p className="text-xs text-amber-200/90 font-medium">

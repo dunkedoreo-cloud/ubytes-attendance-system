@@ -193,10 +193,10 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
-            <Database className="w-4 h-4 text-emerald-600" />
+            <Database className="w-4 h-4 text-ubytes-maroon-800" />
             <span>Supabase Cloud Database</span>
             {isSbActive && (
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-ubytes-amber-500 animate-pulse"></span>
             )}
           </button>
 
@@ -208,10 +208,10 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
-            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+            <FileSpreadsheet className="w-4 h-4 text-ubytes-maroon-800" />
             <span>Google Sheets Automated Sync</span>
             {isGsActive && (
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-ubytes-amber-500 animate-pulse"></span>
             )}
           </button>
         </div>
@@ -228,7 +228,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
               {/* Status Header */}
               <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
                 <div className="flex items-center gap-2.5">
-                  <div className={`w-3 h-3 rounded-full ${isSbActive ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}></div>
+                  <div className={`w-3 h-3 rounded-full ${isSbActive ? 'bg-ubytes-amber-500 animate-pulse' : 'bg-slate-400'}`}></div>
                   <span className="font-bold text-slate-700 font-condensed uppercase tracking-wider text-xs">
                     Current Status: {isSbActive ? 'Configured & Active' : 'Offline / LocalStorage Mode'}
                   </span>
@@ -266,7 +266,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                     <label className="block text-[11px] font-condensed font-bold text-slate-600 uppercase tracking-wider">
                       Public Anon / Publishable Key
                     </label>
-                    <span className="text-[10px] text-emerald-600 font-medium">Publishable key (sb_publishable_...) or Legacy anon</span>
+                    <span className="text-[10px] text-slate-500 font-medium">Publishable key (sb_publishable_...) or Legacy anon</span>
                   </div>
                   <div className="relative">
                     <input
@@ -317,18 +317,18 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                   <button
                     onClick={handleSyncStudents}
                     disabled={isSyncingStudents || !isSbActive}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider text-xs btn-subtle"
+                    className="px-4 py-2 bg-ubytes-maroon-800 hover:bg-ubytes-maroon-900 disabled:opacity-50 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider text-xs btn-subtle"
                   >
-                    {isSyncingStudents ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    {isSyncingStudents ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5 text-ubytes-amber-400" />}
                     <span>Push {students.length} Students</span>
                   </button>
 
                   <button
                     onClick={handleSyncAttendance}
                     disabled={isSyncingAttendance || !isSbActive || attendanceRecords.length === 0}
-                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider text-xs btn-subtle"
+                    className="px-4 py-2 bg-ubytes-maroon-800 hover:bg-ubytes-maroon-900 disabled:opacity-50 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider text-xs btn-subtle"
                   >
-                    {isSyncingAttendance ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    {isSyncingAttendance ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5 text-ubytes-amber-400" />}
                     <span>Push {attendanceRecords.length} Attendance to Cloud</span>
                   </button>
                 </div>
@@ -337,13 +337,13 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                 {supabaseStatus.result && (
                   <div className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
                     supabaseStatus.result.success
-                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                      : 'bg-amber-50 border-amber-300 text-amber-800'
+                      ? 'bg-amber-50 border-amber-300 text-amber-950'
+                      : 'bg-red-50 border-red-300 text-red-900'
                   }`}>
                     {supabaseStatus.result.success ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-ubytes-maroon-800 flex-shrink-0" />
                     ) : (
-                      <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                      <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
                     )}
                     <span>{supabaseStatus.result.message}</span>
                   </div>
@@ -406,7 +406,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
               {/* Status Header */}
               <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
                 <div className="flex items-center gap-2.5">
-                  <div className={`w-3 h-3 rounded-full ${isGsActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></div>
+                  <div className={`w-3 h-3 rounded-full ${isGsActive ? 'bg-ubytes-amber-500 animate-pulse' : 'bg-slate-400'}`}></div>
                   <span className="font-bold text-slate-700 font-condensed uppercase tracking-wider text-xs">
                     Current Status: {isGsActive ? 'Connected & Auto-Syncing' : 'Not Connected'}
                   </span>
@@ -419,7 +419,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
               {/* Webhook URL Input */}
               <div className="space-y-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                  <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                  <FileSpreadsheet className="w-4 h-4 text-ubytes-maroon-800" />
                   Google Apps Script Web App Webhook
                 </h4>
 
@@ -453,9 +453,9 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                   <button
                     onClick={handleSyncAllToSheets}
                     disabled={isSyncingRecords || !isGsActive}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider text-xs btn-subtle"
+                    className="px-4 py-2 bg-ubytes-maroon-800 hover:bg-ubytes-maroon-900 disabled:opacity-50 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm font-condensed uppercase tracking-wider text-xs btn-subtle"
                   >
-                    {isSyncingRecords ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                    {isSyncingRecords ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5 text-ubytes-amber-400" />}
                     <span>Sync All {attendanceRecords.length} Records to Sheet</span>
                   </button>
                 </div>
@@ -464,37 +464,37 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                 {sheetsStatus.result && (
                   <div className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
                     sheetsStatus.result.success
-                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                      : 'bg-amber-50 border-amber-300 text-amber-800'
+                      ? 'bg-amber-50 border-amber-300 text-amber-950'
+                      : 'bg-red-50 border-red-300 text-red-900'
                   }`}>
                     {sheetsStatus.result.success ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-ubytes-maroon-800 flex-shrink-0" />
                     ) : (
-                      <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                      <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
                     )}
                     <span>{sheetsStatus.result.message}</span>
                   </div>
                 )}
 
                 {sheetsSyncResult && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-semibold">
+                  <div className="p-3 bg-amber-50 border border-amber-200 text-amber-950 rounded-xl text-xs font-semibold">
                     {sheetsSyncResult}
                   </div>
                 )}
               </div>
 
               {/* 3-Step Setup Instructions */}
-              <div className="p-4 bg-emerald-50/70 rounded-2xl border border-emerald-200 space-y-2.5">
+              <div className="p-4 bg-amber-50/70 rounded-2xl border border-amber-200 space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-emerald-950 font-condensed uppercase tracking-wider text-xs flex items-center gap-1.5">
-                    <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
+                  <h4 className="font-bold text-amber-950 font-condensed uppercase tracking-wider text-xs flex items-center gap-1.5">
+                    <FileSpreadsheet className="w-4 h-4 text-ubytes-maroon-800" />
                     3-Step Google Sheet Auto-Sync Setup
                   </h4>
                   <a 
                     href="https://sheets.new" 
                     target="_blank" 
                     rel="noreferrer"
-                    className="text-[11px] font-bold text-emerald-800 hover:underline flex items-center gap-1"
+                    className="text-[11px] font-bold text-ubytes-maroon-900 hover:underline flex items-center gap-1"
                   >
                     <span>Create New Sheet (sheets.new)</span>
                     <ExternalLink className="w-3 h-3" />
@@ -528,7 +528,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
         {/* Modal Footer */}
         <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-2 text-slate-500 font-condensed text-xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span className="w-2 h-2 rounded-full bg-ubytes-amber-500"></span>
             <span>Zero-latency offline buffer active. All scans are saved locally first.</span>
           </div>
           <button

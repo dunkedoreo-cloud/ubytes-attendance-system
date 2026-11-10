@@ -179,8 +179,8 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           )}
 
           {success && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-700 flex items-center gap-2 animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-950 flex items-center gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-ubytes-maroon-800 flex-shrink-0" />
               <span className="font-bold">Access Granted! Logging in as {selectedAdmin.name}...</span>
             </div>
           )}

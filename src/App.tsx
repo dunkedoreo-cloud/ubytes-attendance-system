@@ -967,10 +967,10 @@ export function App() {
           onClick={() => setIsCloudModalOpen(true)}
           className="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all font-condensed tracking-wider uppercase text-[10px] text-white/60 hover:text-white active:scale-95 cursor-pointer relative"
         >
-          <Zap className={`w-4 h-4 mb-0.5 ${isCloudActive ? 'text-emerald-400' : ''}`} />
+          <Zap className={`w-4 h-4 mb-0.5 ${isCloudActive ? 'text-ubytes-amber-400' : ''}`} />
           <span>Sync</span>
           {isCloudActive && (
-            <span className="absolute top-1 right-2.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="absolute top-1 right-2.5 w-1.5 h-1.5 rounded-full bg-ubytes-amber-400 animate-pulse"></span>
           )}
         </button>
       </nav>
