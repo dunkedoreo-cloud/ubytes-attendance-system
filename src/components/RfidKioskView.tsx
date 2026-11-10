@@ -685,24 +685,25 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
               </div>
 
               {/* Search & Export */}
-              <div className="flex items-center gap-2 mb-2 flex-shrink-0">
-                <div className="relative flex-1">
-                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <div className="flex items-center gap-2 mb-2 px-0.5 flex-shrink-0">
+                <div className="relative flex-1 min-w-0">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="text"
                     placeholder="Search by name, student ID or year..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-ubytes-amber-500 transition-all"
+                    className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-ubytes-amber-500 transition-all h-8"
                   />
                 </div>
 
                 <button
+                  type="button"
                   onClick={handleExportCSV}
-                  className="btn-subtle active:scale-[0.96] px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1 transition-all shadow-sm font-condensed uppercase tracking-wider flex-shrink-0 cursor-pointer"
+                  className="btn-subtle active:scale-[0.96] px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs font-condensed uppercase tracking-wider flex-shrink-0 cursor-pointer h-8"
                   title="Export Attendance to CSV"
                 >
-                  <Download className="w-3.5 h-3.5" />
+                  <Download className="w-3.5 h-3.5 text-slate-500" />
                   <span>CSV</span>
                 </button>
 
@@ -710,31 +711,31 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowClearModal(true)}
-                    className="btn-subtle active:scale-[0.96] px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold flex items-center gap-1 transition-all shadow-sm font-condensed uppercase tracking-wider flex-shrink-0 cursor-pointer"
+                    className="btn-subtle active:scale-[0.96] px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs font-condensed uppercase tracking-wider flex-shrink-0 cursor-pointer h-8"
                     title="Reset/Clear attendance records for this event"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-3.5 h-3.5 text-red-600" />
                     <span>Reset</span>
                   </button>
                 )}
               </div>
 
               {/* Scrollable Table */}
-              <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0 rounded-xl border border-slate-100">
+              <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0 rounded-xl border border-slate-100 shadow-2xs bg-white">
                 <table className="w-full text-xs text-slate-600 table-fixed">
                   <colgroup>
                     <col style={{ width: '16%' }} />
-                    <col style={{ width: '31%' }} />
+                    <col style={{ width: '35%' }} />
                     <col style={{ width: '10%' }} />
-                    <col style={{ width: '12%' }} />
-                    <col style={{ width: '14%' }} />
-                    <col style={{ width: '17%' }} />
+                    <col style={{ width: '13%' }} />
+                    <col style={{ width: '13%' }} />
+                    <col style={{ width: '13%' }} />
                   </colgroup>
-                  <thead className="bg-slate-50 sticky top-0 text-[10px] font-condensed font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                  <thead className="bg-slate-50 sticky top-0 text-[10px] font-condensed font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 shadow-2xs z-10">
                     <tr>
-                      <th className="py-2 px-1 text-center whitespace-nowrap">Student ID</th>
-                      <th className="py-2 px-1 text-center whitespace-nowrap">Student Name</th>
-                      <th className="py-2 px-0.5 text-center whitespace-nowrap">Year</th>
+                      <th className="py-2 pl-3.5 pr-2 text-left whitespace-nowrap">Student ID</th>
+                      <th className="py-2 pl-3 pr-2 text-left whitespace-nowrap">Student Name</th>
+                      <th className="py-2 px-1 text-center whitespace-nowrap">Year</th>
                       <th className="py-2 px-1 text-center whitespace-nowrap">Time In</th>
                       <th className="py-2 px-1 text-center whitespace-nowrap">Time Out</th>
                       <th className="py-2 px-1 text-center whitespace-nowrap">Status</th>
@@ -751,61 +752,61 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                               : index === 0 ? 'new-row-highlight' : 'hover:bg-amber-50/50'
                           }`}
                         >
-                          {/* Student ID */}
-                          <td className="py-1.5 px-1 font-mono font-bold text-slate-900 text-xs text-center align-middle whitespace-nowrap">
+                          {/* Student ID - Left-aligned with consistent indent */}
+                          <td className="py-2 pl-3.5 pr-2 font-mono font-bold text-slate-900 text-xs text-left align-middle whitespace-nowrap">
                             {row.studentId}
                           </td>
 
-                          {/* Student Name - Centered */}
-                          <td className="py-1.5 px-1 align-middle text-center whitespace-nowrap">
-                            <div className="flex items-center justify-center gap-1.5 min-w-0">
+                          {/* Student Name - Left-aligned with vertically aligned avatars & names */}
+                          <td className="py-2 pl-3 pr-2 align-middle text-left whitespace-nowrap">
+                            <div className="flex items-center justify-start gap-2 min-w-0">
                               <img
                                 src={row.photo || './default_avatar.jpg'}
                                 onError={(e) => { (e.target as HTMLImageElement).src = './default_avatar.jpg'; }}
                                 alt=""
-                                className="w-5 h-5 rounded-full object-cover border border-slate-200 flex-shrink-0 bg-slate-100"
+                                className="w-5 h-5 rounded-full object-cover border border-slate-200 flex-shrink-0 bg-slate-100 shadow-2xs"
                               />
-                              <span className="font-semibold text-slate-800 text-xs truncate max-w-full text-center">
+                              <span className="font-semibold text-slate-800 text-xs truncate max-w-full text-left" title={row.studentName}>
                                 {row.studentName}
                               </span>
                             </div>
                           </td>
 
-                          {/* Year Level - Centered & Aligned Box */}
-                          <td className="py-1.5 px-0.5 text-center align-middle whitespace-nowrap">
-                            <span className="inline-block text-[10px] font-condensed font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded-md border border-slate-200/80 whitespace-nowrap">
+                          {/* Year Level - Centered Pill */}
+                          <td className="py-2 px-1 text-center align-middle whitespace-nowrap">
+                            <span className="inline-flex items-center justify-center min-w-[56px] text-[10px] font-condensed font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/80 whitespace-nowrap">
                               {row.yearLevel}
                             </span>
                           </td>
 
-                          {/* Time In */}
-                          <td className="py-1.5 px-1 font-mono text-[11px] text-slate-700 font-medium text-center align-middle whitespace-nowrap">
+                          {/* Time In - Centered */}
+                          <td className="py-2 px-1 font-mono text-[11px] text-slate-700 font-medium text-center align-middle whitespace-nowrap tabular-nums">
                             {row.timeIn}
                           </td>
 
-                          {/* Time Out */}
-                          <td className="py-1.5 px-1 font-mono text-[11px] text-center align-middle whitespace-nowrap">
+                          {/* Time Out - Centered */}
+                          <td className="py-2 px-1 font-mono text-[11px] text-center align-middle whitespace-nowrap tabular-nums">
                             {row.timeOut ? (
-                              <span className="inline-block text-blue-700 font-bold bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md text-[10px] whitespace-nowrap">
+                              <span className="inline-flex items-center justify-center min-w-[70px] text-blue-700 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md text-[10px] whitespace-nowrap">
                                 {row.timeOut}
                               </span>
                             ) : (
-                              <span className="text-emerald-600 italic text-[10px] inline-flex items-center justify-center gap-1 bg-emerald-50/60 px-1.5 py-0.5 rounded-md border border-emerald-100 whitespace-nowrap">
+                              <span className="inline-flex items-center justify-center min-w-[70px] text-emerald-600 italic text-[10px] gap-1 bg-emerald-50/70 px-2 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                 In Session
                               </span>
                             )}
                           </td>
 
-                          {/* Status - Rectangular Box Badge (not circle or oblong) */}
-                          <td className="py-1.5 px-1 text-center align-middle whitespace-nowrap relative">
+                          {/* Status - Centered Pill Badge */}
+                          <td className="py-2 px-1 text-center align-middle whitespace-nowrap relative">
                             <div className="flex items-center justify-center">
                               {row.timeOut ? (
-                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs whitespace-nowrap">
+                                <span className="inline-flex items-center justify-center min-w-[64px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs whitespace-nowrap">
                                   CHECKED OUT
                                 </span>
                               ) : (
-                                <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider shadow-2xs whitespace-nowrap ${
+                                <span className={`inline-flex items-center justify-center min-w-[58px] px-2 py-0.5 rounded-md text-[10px] font-black font-condensed uppercase tracking-wider shadow-2xs whitespace-nowrap ${
                                   row.status === 'On-Time'
                                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                     : 'bg-amber-50 text-amber-700 border border-amber-200'
@@ -815,7 +816,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                               )}
                             </div>
 
-                            {/* Subtle Delete Record Action Button - Appears on row hover or when active */}
+                            {/* Subtle Delete Record Action Button */}
                             {onDeleteAttendanceRecord && (
                               <button
                                 type="button"
@@ -824,7 +825,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                                   playWarningBeep();
                                   setRecordToDelete(row);
                                 }}
-                                className={`transition-all duration-150 absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-md shadow-2xs border cursor-pointer z-10 ${
+                                className={`transition-all duration-150 absolute right-1.5 top-1/2 -translate-y-1/2 p-1 rounded-md shadow-2xs border cursor-pointer z-10 ${
                                   recordToDelete?.id === row.id
                                     ? 'opacity-100 text-red-700 bg-red-100 border-red-300 ring-2 ring-red-400'
                                     : 'opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-600 hover:bg-red-50 bg-white/95 border-slate-200/60'
@@ -964,38 +965,40 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
             </div>
             <div className="overflow-x-auto max-h-72">
               <table className="w-full text-xs">
-                <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-400">
+                <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-200">
                   <tr>
-                    <th className="p-2 text-center whitespace-nowrap">ID</th>
-                    <th className="p-2 text-center whitespace-nowrap">Student Name</th>
+                    <th className="p-2 pl-3 text-left whitespace-nowrap">Student ID</th>
+                    <th className="p-2 pl-2 text-left whitespace-nowrap">Student Name</th>
                     <th className="p-2 text-center whitespace-nowrap">Time In</th>
                     <th className="p-2 text-center whitespace-nowrap">Time Out</th>
                     <th className="p-2 text-center whitespace-nowrap">Status</th>
                     <th className="p-2 text-center whitespace-nowrap">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 font-medium">
                   {filteredRecords.map(r => (
                     <tr key={r.id}>
-                      <td className="p-2 font-mono font-bold text-slate-800 text-center whitespace-nowrap">{r.studentId}</td>
-                      <td className="p-2 text-center whitespace-nowrap font-medium">{r.studentName}</td>
-                      <td className="p-2 font-mono text-center whitespace-nowrap">{r.timeIn}</td>
+                      <td className="p-2 pl-3 font-mono font-bold text-slate-900 text-left whitespace-nowrap">{r.studentId}</td>
+                      <td className="p-2 pl-2 text-left whitespace-nowrap font-medium text-slate-800">{r.studentName}</td>
+                      <td className="p-2 font-mono text-center whitespace-nowrap tabular-nums">{r.timeIn}</td>
                       <td className="p-2 font-mono text-xs text-center whitespace-nowrap">
                         {r.timeOut ? (
-                          <span className="text-blue-700 font-bold bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md text-[10px]">
+                          <span className="inline-flex items-center justify-center min-w-[64px] text-blue-700 font-bold bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md text-[10px]">
                             {r.timeOut}
                           </span>
                         ) : (
-                          <span className="text-slate-400 italic">In Session</span>
+                          <span className="inline-flex items-center justify-center min-w-[64px] text-emerald-600 italic text-[10px] bg-emerald-50/70 border border-emerald-200/80 px-1.5 py-0.5 rounded-md">
+                            In Session
+                          </span>
                         )}
                       </td>
                       <td className="p-2 text-center whitespace-nowrap">
                         {r.timeOut ? (
-                          <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                          <span className="inline-flex items-center justify-center min-w-[60px] px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
                             CHECKED OUT
                           </span>
                         ) : (
-                          <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                          <span className={`inline-flex items-center justify-center min-w-[54px] px-2 py-0.5 rounded-md text-[10px] font-bold ${
                             r.status === 'On-Time' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
                           }`}>
                             {r.status}
