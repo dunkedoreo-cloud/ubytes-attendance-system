@@ -101,11 +101,11 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 modal-backdrop">
-      <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col modal-content">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 modal-backdrop">
+      <div className="bg-white rounded-3xl w-full max-w-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] modal-content">
         
         {/* Header */}
-        <div className="px-6 py-4 bg-ubytes-maroon-900 text-white flex items-center justify-between">
+        <div className="px-6 py-4 bg-ubytes-maroon-900 text-white flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-ubytes-amber-500 text-ubytes-maroon-950 flex items-center justify-center font-bold">
               <Calendar className="w-5 h-5" />
@@ -129,7 +129,7 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1 custom-scrollbar">
           
           {/* Active Session Selector */}
           <div>
@@ -195,32 +195,34 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
-                    <div className="flex items-center justify-between text-xs mb-1 pr-16">
-                      <span className="font-bold text-slate-800 line-clamp-1">{evt.title}</span>
+                    <div className="flex items-center justify-between text-xs mb-1 pr-14">
+                      <span className="font-bold text-slate-800 line-clamp-1" title={evt.title}>{evt.title}</span>
                       {isActive && (
                         <span className="bg-ubytes-maroon-800 text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ml-1">
                           Active
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] text-slate-400 flex items-center gap-2 pr-16 mt-0.5">
-                      <span>{evt.startTime}</span>
-                      <span>•</span>
-                      <span className="truncate">{evt.location}</span>
-                      <span>•</span>
-                      {evt.attendanceMode === 'in_only' ? (
-                        <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded whitespace-nowrap">
-                          Time In Only
-                        </span>
-                      ) : evt.attendanceMode === 'out_only' ? (
-                        <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.2 rounded whitespace-nowrap">
-                          Time Out Only
-                        </span>
-                      ) : (
-                        <span className="text-[9px] font-bold text-ubytes-maroon-800 bg-red-50 border border-red-200 px-1.5 py-0.2 rounded whitespace-nowrap">
-                          In & Out
-                        </span>
-                      )}
+                    <div className="text-[11px] text-slate-400 flex items-center gap-1.5 pr-14 mt-1">
+                      <span className="font-semibold text-slate-600 whitespace-nowrap flex-shrink-0">{evt.startTime}</span>
+                      <span className="text-slate-300">•</span>
+                      <span className="truncate min-w-0" title={evt.location}>{evt.location}</span>
+                      <span className="text-slate-300">•</span>
+                      <span className="whitespace-nowrap flex-shrink-0">
+                        {evt.attendanceMode === 'in_only' ? (
+                          <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">
+                            Time In Only
+                          </span>
+                        ) : evt.attendanceMode === 'out_only' ? (
+                          <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.2 rounded">
+                            Time Out Only
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-bold text-ubytes-maroon-800 bg-red-50 border border-red-200 px-1.5 py-0.2 rounded">
+                            In & Out
+                          </span>
+                        )}
+                      </span>
                     </div>
 
                     {/* Action Buttons: Edit & Delete */}

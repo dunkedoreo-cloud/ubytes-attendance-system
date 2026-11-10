@@ -8,7 +8,9 @@ import {
   Download, 
   Plus, 
   CreditCard, 
-  FileText 
+  FileText,
+  Search,
+  Users
 } from 'lucide-react';
 
 interface DashboardViewProps {
@@ -29,6 +31,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   currentUser,
 }) => {
   const [filterTab, setFilterTab] = useState<'all' | 'on-time' | 'late'>('all');
+  const [selectedEventId, setSelectedEventId] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Real-time live date and ticking clock
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -109,16 +113,42 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return `${Math.abs(diffDays)}D AGO`;
   };
 
-  // Filter attendance table records
-  const filteredRecords = attendanceRecords.filter(r => {
-    if (filterTab === 'on-time') return r.status === 'On-Time';
-    if (filterTab === 'late') return r.status === 'Late';
-    return true;
-  });
+  // Records for the selected event (or all events)
+  const selectedEventRecords = useMemo(() => {
+    if (selectedEventId === 'all') return attendanceRecords;
+    const targetEvent = events.find(e => e.id === selectedEventId);
+    return attendanceRecords.filter(r => 
+      r.eventId === selectedEventId || (targetEvent && r.eventName === targetEvent.title)
+    );
+  }, [attendanceRecords, selectedEventId, events]);
+
+  // Filter attendance table records by event, status tab, and search query
+  const filteredRecords = useMemo(() => {
+    return selectedEventRecords.filter(r => {
+      // Status filter tab
+      if (filterTab === 'on-time' && r.status !== 'On-Time') return false;
+      if (filterTab === 'late' && r.status !== 'Late') return false;
+
+      // Search query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matches = 
+          r.studentName.toLowerCase().includes(q) ||
+          r.studentId.toLowerCase().includes(q) ||
+          (r.program && r.program.toLowerCase().includes(q)) ||
+          (r.yearLevel && r.yearLevel.toLowerCase().includes(q)) ||
+          (r.eventName && r.eventName.toLowerCase().includes(q));
+        if (!matches) return false;
+      }
+
+      return true;
+    });
+  }, [selectedEventRecords, filterTab, searchQuery]);
 
   const handleExport = () => {
     const headers = ['Student ID', 'Full Name', 'Course', 'Year Level', 'Event', 'Date', 'Time In', 'Time Out', 'Status'];
-    const rows = attendanceRecords.map(r => [
+    const recordsToExport = filteredRecords.length > 0 ? filteredRecords : selectedEventRecords;
+    const rows = recordsToExport.map(r => [
       `"${r.studentId}"`,
       `"${r.studentName}"`,
       `"${r.program}"`,
@@ -134,7 +164,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `ubytes_full_attendance_report.csv`);
+    const eventNameSlug = selectedEventId === 'all' 
+      ? 'all_events' 
+      : (events.find(e => e.id === selectedEventId)?.title || 'event').toLowerCase().replace(/[^a-z0-9]+/g, '_');
+    link.setAttribute('download', `ubytes_attendance_${eventNameSlug}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -319,174 +352,305 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
       </div>
 
-      {/* Bottom Section: 2x2 Events Grid (Left) + Detailed Attendance Table (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      {/* Bottom Section: Events Filter Grid (Left) + Detailed Attendance Table (Right) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        {/* LEFT: 4 Organization Event Cards (4 Cols) */}
-        <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {events.map((evt) => (
-            <div
-              key={evt.id}
-              className="bg-white rounded-2xl p-4 ubytes-card-shadow border border-slate-100 flex flex-col justify-between hover:border-ubytes-amber-400 transition-all group cursor-pointer"
-            >
-              <div>
-                <span className="text-[10px] font-condensed font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                  {evt.status}
-                </span>
-                <h4 className="text-xs font-bold text-slate-800 line-clamp-2 group-hover:text-ubytes-maroon-800 transition-colors">
-                  {evt.title}
-                </h4>
-              </div>
+        {/* LEFT: Organization Event Cards (4 Cols) */}
+        <div className="lg:col-span-4 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-slate-500 font-condensed uppercase tracking-wider">
+              Filter by Event ({events.length})
+            </h4>
+            {selectedEventId !== 'all' && (
+              <button
+                onClick={() => setSelectedEventId('all')}
+                className="text-[11px] text-ubytes-maroon-800 font-bold hover:underline"
+              >
+                Show All Events
+              </button>
+            )}
+          </div>
 
-              <div className="mt-4 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-slate-400 block font-condensed uppercase">Scheduled in</span>
-                  <span className="font-display text-xl text-ubytes-maroon-800 leading-none">
-                    {getEventCountdown(evt.date)}
-                  </span>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 max-h-[560px] overflow-y-auto pr-1">
+            {events.map((evt) => {
+              const isSelected = selectedEventId === evt.id;
+              const count = attendanceRecords.filter(r => r.eventId === evt.id || r.eventName === evt.title).length;
 
-                <div className="w-8 h-8 rounded-xl bg-amber-50 text-ubytes-maroon-800 group-hover:bg-ubytes-maroon-800 group-hover:text-ubytes-amber-300 flex items-center justify-center transition-all shadow-sm">
-                  <ArrowUpRight className="w-4 h-4" />
+              return (
+                <div
+                  key={evt.id}
+                  onClick={() => setSelectedEventId(isSelected ? 'all' : evt.id)}
+                  className={`bg-white rounded-2xl p-4 ubytes-card-shadow border transition-all group cursor-pointer flex flex-col justify-between ${
+                    isSelected
+                      ? 'border-ubytes-maroon-800 ring-2 ring-ubytes-amber-500 bg-amber-50/20 shadow-md'
+                      : 'border-slate-100 hover:border-ubytes-amber-400'
+                  }`}
+                  title={`Click to filter attendance for ${evt.title}`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[10px] font-condensed font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                      {evt.status}
+                    </span>
+                    {isSelected ? (
+                      <span className="bg-ubytes-maroon-800 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                        Active Filter
+                      </span>
+                    ) : (
+                      <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">
+                        {count} Attended
+                      </span>
+                    )}
+                  </div>
+
+                  <h4 className={`text-xs font-bold line-clamp-2 transition-colors ${
+                    isSelected ? 'text-ubytes-maroon-900' : 'text-slate-800 group-hover:text-ubytes-maroon-800'
+                  }`}>
+                    {evt.title}
+                  </h4>
+
+                  <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-condensed uppercase">Scheduled in</span>
+                      <span className="font-display text-xl text-ubytes-maroon-800 leading-none">
+                        {getEventCountdown(evt.date)}
+                      </span>
+                    </div>
+
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
+                      isSelected
+                        ? 'bg-ubytes-maroon-800 text-ubytes-amber-300'
+                        : 'bg-amber-50 text-ubytes-maroon-800 group-hover:bg-ubytes-maroon-800 group-hover:text-ubytes-amber-300'
+                    }`}>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
 
         {/* RIGHT: Detailed Student Attendance Log Table (8 Cols) */}
         <div className="lg:col-span-8 bg-white rounded-2xl p-5 ubytes-card-shadow border border-slate-100 flex flex-col justify-between">
           <div>
             {/* Header & Filter Tabs */}
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
               <div>
-                <h3 className="font-display tracking-wider text-slate-900 text-2xl leading-none">
-                  STUDENT ATTENDANCE RECORDS
-                </h3>
-                <p className="text-[11px] text-slate-400 font-medium">
-                  Student arrival details and check-in timeline
+                <div className="flex items-center gap-2">
+                  <h3 className="font-display tracking-wider text-slate-900 text-2xl leading-none">
+                    STUDENT ATTENDANCE RECORDS
+                  </h3>
+                  {selectedEventId !== 'all' && (
+                    <span className="bg-ubytes-amber-100 text-ubytes-maroon-900 text-[10px] font-bold px-2 py-0.5 rounded-full border border-ubytes-amber-300 font-condensed uppercase tracking-wider">
+                      {events.find(e => e.id === selectedEventId)?.title || 'Filtered Event'}
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                  {selectedEventId === 'all'
+                    ? 'Showing all students across all events'
+                    : `Showing all students recorded for: ${events.find(e => e.id === selectedEventId)?.title}`}
                 </p>
               </div>
 
-              {/* Filter Tabs */}
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold font-condensed uppercase tracking-wider">
-                <button
-                  onClick={() => setFilterTab('all')}
-                  className={`px-3 py-1.5 rounded-lg btn-subtle ${
-                    filterTab === 'all'
-                      ? 'bg-white text-slate-800 shadow-sm font-bold'
-                      : 'text-slate-500 hover:text-slate-800'
-                  }`}
+              {/* Action Controls: Event Selector & Filter Tabs */}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Event Dropdown Selector */}
+                <select
+                  value={selectedEventId}
+                  onChange={(e) => setSelectedEventId(e.target.value)}
+                  className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-ubytes-amber-500 focus:outline-none max-w-[200px] truncate"
                 >
-                  All
-                </button>
-                <button
-                  onClick={() => setFilterTab('on-time')}
-                  className={`px-3 py-1.5 rounded-lg btn-subtle ${
-                    filterTab === 'on-time'
-                      ? 'bg-white text-slate-800 shadow-sm font-bold'
-                      : 'text-slate-500 hover:text-slate-800'
-                  }`}
-                >
-                  On-Time
-                </button>
-                <button
-                  onClick={() => setFilterTab('late')}
-                  className={`px-3 py-1.5 rounded-lg btn-subtle ${
-                    filterTab === 'late'
-                      ? 'bg-white text-slate-800 shadow-sm font-bold'
-                      : 'text-slate-500 hover:text-slate-800'
-                  }`}
-                >
-                  Late Attendance
-                </button>
+                  <option value="all">All Events ({attendanceRecords.length})</option>
+                  {events.map((evt) => {
+                    const count = attendanceRecords.filter(r => r.eventId === evt.id || r.eventName === evt.title).length;
+                    return (
+                      <option key={evt.id} value={evt.id}>
+                        {evt.title} ({count})
+                      </option>
+                    );
+                  })}
+                </select>
+
+                {/* Filter Tabs */}
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold font-condensed uppercase tracking-wider">
+                  <button
+                    onClick={() => setFilterTab('all')}
+                    className={`px-2.5 py-1 rounded-lg btn-subtle ${
+                      filterTab === 'all'
+                        ? 'bg-white text-slate-800 shadow-sm font-bold'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    All ({selectedEventRecords.length})
+                  </button>
+                  <button
+                    onClick={() => setFilterTab('on-time')}
+                    className={`px-2.5 py-1 rounded-lg btn-subtle ${
+                      filterTab === 'on-time'
+                        ? 'bg-white text-slate-800 shadow-sm font-bold'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    On-Time
+                  </button>
+                  <button
+                    onClick={() => setFilterTab('late')}
+                    className={`px-2.5 py-1 rounded-lg btn-subtle ${
+                      filterTab === 'late'
+                        ? 'bg-white text-slate-800 shadow-sm font-bold'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    Late
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Table */}
-            <div className="overflow-x-auto rounded-xl border border-slate-100">
+            {/* Search Input Bar */}
+            <div className="mb-3 flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search student by name, student ID, program, or event..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-8.5 pr-8 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-ubytes-amber-500 focus:outline-none transition-all placeholder:text-slate-400"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-slate-200"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              <button
+                onClick={handleExport}
+                className="px-3 py-1.5 bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold rounded-xl text-xs flex items-center gap-1.5 btn-subtle flex-shrink-0"
+                title="Export filtered records to CSV"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span className="font-condensed uppercase tracking-wider">CSV</span>
+              </button>
+            </div>
+
+            {/* Scrollable Table Container (No limits, supports hundreds of students) */}
+            <div className="overflow-x-auto overflow-y-auto max-h-[460px] rounded-xl border border-slate-200 shadow-2xs relative">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 text-slate-400 font-condensed font-bold uppercase text-[11px] tracking-wider">
+                <thead className="bg-slate-50 sticky top-0 z-10 text-slate-500 font-condensed font-bold uppercase text-[11px] tracking-wider border-b border-slate-200 shadow-2xs">
                   <tr>
-                    <th className="py-2.5 px-3">Student ID</th>
-                    <th className="py-2.5 px-3">Full Name</th>
-                    <th className="py-2.5 px-3">Date</th>
-                    <th className="py-2.5 px-3">Schedule</th>
-                    <th className="py-2.5 px-3">Time In</th>
-                    <th className="py-2.5 px-3">Time Out</th>
-                    <th className="py-2.5 px-3">Status</th>
-                    <th className="py-2.5 px-3 text-center">Action</th>
+                    <th className="py-2.5 px-3 whitespace-nowrap">Student ID</th>
+                    <th className="py-2.5 px-3 whitespace-nowrap">Full Name</th>
+                    <th className="py-2.5 px-3 whitespace-nowrap">Date</th>
+                    <th className="py-2.5 px-3 whitespace-nowrap">Event / Schedule</th>
+                    <th className="py-2.5 px-3 whitespace-nowrap">Time In</th>
+                    <th className="py-2.5 px-3 whitespace-nowrap">Time Out</th>
+                    <th className="py-2.5 px-3 whitespace-nowrap">Status</th>
+                    <th className="py-2.5 px-3 text-center whitespace-nowrap">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {filteredRecords.slice(0, 7).map((row) => {
-                    const matchedEvent = events.find(e => e.id === row.eventId || e.title === row.eventName);
-                    const scheduleTime = matchedEvent?.startTime || '08:00 AM';
-                    const displayDate = (!row.date || row.date === '16 Sep 2026') ? formattedDateShort : row.date;
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {filteredRecords.length > 0 ? (
+                    filteredRecords.map((row) => {
+                      const matchedEvent = events.find(e => e.id === row.eventId || e.title === row.eventName);
+                      const scheduleTime = matchedEvent?.startTime || '08:00 AM';
+                      const displayDate = (!row.date || row.date === '16 Sep 2026') ? formattedDateShort : row.date;
 
-                    return (
-                      <tr key={row.id} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-2.5 px-3 font-mono font-bold text-ubytes-maroon-800">
-                          {row.studentId}
-                        </td>
-                        <td className="py-2.5 px-3 font-semibold text-slate-800">
-                          {row.studentName}
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-500">
-                          {displayDate}
-                        </td>
-                        <td className="py-2.5 px-3 font-mono text-slate-400">
-                          {scheduleTime}
-                        </td>
-                        <td className="py-2.5 px-3 font-mono text-slate-700 font-semibold">
-                          {row.timeIn}
-                        </td>
-                        <td className="py-2.5 px-3 font-mono text-xs">
-                          {row.timeOut ? (
-                            <span className="text-blue-700 font-bold bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded text-[11px]">
-                              {row.timeOut}
+                      return (
+                        <tr key={row.id} className="hover:bg-amber-50/40 transition-colors">
+                          <td className="py-2.5 px-3 font-mono font-bold text-ubytes-maroon-800 whitespace-nowrap">
+                            {row.studentId}
+                          </td>
+                          <td className="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">
+                            {row.studentName}
+                          </td>
+                          <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap">
+                            {displayDate}
+                          </td>
+                          <td className="py-2.5 px-3 text-slate-600 whitespace-nowrap">
+                            <span className="font-semibold block truncate max-w-[160px]" title={row.eventName}>
+                              {row.eventName}
                             </span>
-                          ) : (
-                            <span className="text-slate-400 italic text-[11px]">In Session</span>
-                          )}
-                        </td>
-                        <td className="py-2.5 px-3">
-                          {row.timeOut ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-condensed font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200/50">
-                              • Checked Out
+                            <span className="font-mono text-[10px] text-slate-400">
+                              {scheduleTime}
                             </span>
-                          ) : (
-                            <span
-                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-condensed font-bold uppercase tracking-wider ${
-                                row.status === 'On-Time'
-                                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'
-                                  : 'bg-amber-50 text-amber-700 border border-amber-200/50'
-                              }`}
+                          </td>
+                          <td className="py-2.5 px-3 font-mono text-slate-700 font-semibold whitespace-nowrap">
+                            {row.timeIn}
+                          </td>
+                          <td className="py-2.5 px-3 font-mono text-xs whitespace-nowrap">
+                            {row.timeOut ? (
+                              <span className="text-blue-700 font-bold bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded text-[11px]">
+                                {row.timeOut}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400 italic text-[11px]">In Session</span>
+                            )}
+                          </td>
+                          <td className="py-2.5 px-3 whitespace-nowrap">
+                            {row.timeOut ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-condensed font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200/50">
+                                • Checked Out
+                              </span>
+                            ) : (
+                              <span
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-condensed font-bold uppercase tracking-wider ${
+                                  row.status === 'On-Time'
+                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'
+                                    : 'bg-amber-50 text-amber-700 border border-amber-200/50'
+                                }`}
+                              >
+                                • {row.status}
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                            <button
+                              onClick={onSwitchToKiosk}
+                              className="p-1 rounded text-slate-400 hover:text-ubytes-maroon-800 hover:bg-slate-100"
+                              title="View in Kiosk"
                             >
-                              • {row.status}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-2.5 px-3 text-center">
-                          <button
-                            onClick={onSwitchToKiosk}
-                            className="p-1 rounded text-slate-400 hover:text-ubytes-maroon-800 hover:bg-slate-100"
-                            title="View in Kiosk"
-                          >
-                            <FileText className="w-3.5 h-3.5" />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                              <FileText className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={8} className="py-12 text-center text-slate-400">
+                        <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                        <p className="font-semibold text-slate-600">No attendance records found</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          {searchQuery
+                            ? `No students matching "${searchQuery}"`
+                            : 'No students have checked in for this event yet.'}
+                        </p>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="pt-3 mt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-            <span>Synchronized with USB RFID Scanner</span>
+          {/* Footer with exact counts */}
+          <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <div>
+              Showing <strong className="text-slate-800 font-bold">{filteredRecords.length}</strong> of{' '}
+              <strong className="text-slate-800 font-bold">{selectedEventRecords.length}</strong> recorded students
+              {selectedEventId !== 'all' && (
+                <span className="text-slate-400 ml-1">
+                  in {events.find(e => e.id === selectedEventId)?.title}
+                </span>
+              )}
+            </div>
+
             <button
               onClick={onSwitchToKiosk}
               className="text-ubytes-maroon-800 font-bold hover:underline flex items-center gap-1 font-condensed uppercase tracking-wider"
