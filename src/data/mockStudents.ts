@@ -151,7 +151,8 @@ export const INITIAL_EVENTS: EventSession[] = [
     location: 'UB Science Complex & Auditorium',
     description: 'Annual gathering of all BSCS students, organization report, project demos, and keynote speaker.',
     status: 'Active',
-    daysLeft: 0
+    daysLeft: 0,
+    attendanceMode: 'both'
   },
   {
     id: 'evt-codecamp',
@@ -162,7 +163,8 @@ export const INITIAL_EVENTS: EventSession[] = [
     location: 'UB Computer Lab 402 & 403',
     description: 'Competitive programming and algorithm contest for junior and senior BSCS students.',
     status: 'Upcoming',
-    daysLeft: 6
+    daysLeft: 6,
+    attendanceMode: 'in_only'
   },
   {
     id: 'evt-tech-symp',
@@ -173,7 +175,8 @@ export const INITIAL_EVENTS: EventSession[] = [
     location: 'Engineering Amphitheater',
     description: 'Technical workshop covering modern AI integrations, React, and cloud native architecture.',
     status: 'Upcoming',
-    daysLeft: 9
+    daysLeft: 9,
+    attendanceMode: 'both'
   },
   {
     id: 'evt-outreach',
@@ -184,7 +187,8 @@ export const INITIAL_EVENTS: EventSession[] = [
     location: 'Barangay Bool High School',
     description: 'Volunteer teaching computer literacy and basic programming to high school students.',
     status: 'Upcoming',
-    daysLeft: 24
+    daysLeft: 24,
+    attendanceMode: 'both'
   }
 ];
 

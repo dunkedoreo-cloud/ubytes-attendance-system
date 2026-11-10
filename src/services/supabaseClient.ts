@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Student, AttendanceRecord, EventSession } from '../types';
+import { Student, AttendanceRecord, EventSession, EventAttendanceMode } from '../types';
 
 let cachedClient: SupabaseClient | null = null;
 
@@ -183,17 +183,29 @@ export async function fetchEventsFromSupabase(): Promise<EventSession[] | null> 
     if (error) throw error;
     if (!data) return null;
 
-    return data.map((row: any) => ({
-      id: row.id,
-      title: row.title,
-      date: row.date,
-      startTime: row.start_time,
-      endTime: row.end_time,
-      location: row.venue || 'University of Bohol',
-      description: row.description || '',
-      lateThreshold: row.late_threshold,
-      status: row.status
-    }));
+    return data.map((row: any) => {
+      const desc = row.description || '';
+      let attendanceMode: EventAttendanceMode = row.attendance_mode || 'both';
+      let cleanDescription = desc;
+      if (!row.attendance_mode && desc.includes('__mode:')) {
+        const parts = desc.split('__mode:');
+        cleanDescription = parts[0];
+        attendanceMode = (parts[1] as EventAttendanceMode) || 'both';
+      }
+
+      return {
+        id: row.id,
+        title: row.title,
+        date: row.date,
+        startTime: row.start_time,
+        endTime: row.end_time,
+        location: row.venue || 'University of Bohol',
+        description: cleanDescription,
+        lateThreshold: row.late_threshold,
+        status: row.status,
+        attendanceMode
+      };
+    });
   } catch (err) {
     console.warn('Failed to fetch events from Supabase:', err);
     return null;
@@ -208,6 +220,10 @@ export async function upsertEventToSupabase(event: EventSession): Promise<boolea
   if (!supabase) return false;
 
   try {
+    const mode = event.attendanceMode || 'both';
+    const cleanDesc = (event.description || '').replace(/__mode:(both|in_only|out_only)/g, '');
+    const descWithMode = mode !== 'both' ? `${cleanDesc}__mode:${mode}` : cleanDesc;
+
     const { error } = await supabase.from('events').upsert({
       id: event.id,
       title: event.title,
@@ -216,7 +232,8 @@ export async function upsertEventToSupabase(event: EventSession): Promise<boolea
       end_time: event.startTime, // default
       venue: event.location,
       late_threshold: event.lateThreshold,
-      status: event.status
+      status: event.status,
+      description: descWithMode
     }, { onConflict: 'id' });
 
     if (error) throw error;

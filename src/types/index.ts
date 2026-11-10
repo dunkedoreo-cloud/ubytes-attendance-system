@@ -32,6 +32,8 @@ export interface AttendanceRecord {
   syncedToSheets?: boolean;
 }
 
+export type EventAttendanceMode = 'both' | 'in_only' | 'out_only';
+
 export interface EventSession {
   id: string;
   title: string;
@@ -42,6 +44,7 @@ export interface EventSession {
   description: string;
   status: 'Active' | 'Upcoming' | 'Completed';
   daysLeft?: number;
+  attendanceMode?: EventAttendanceMode; // 'both' | 'in_only' | 'out_only'
 }
 
 export interface AdminUser {

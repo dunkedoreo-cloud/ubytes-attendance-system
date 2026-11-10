@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { EventSession } from '../types';
-import { X, Calendar, Clock, MapPin, Plus, Trash2, AlertTriangle, Pencil, Check, RotateCcw } from 'lucide-react';
+import { EventSession, EventAttendanceMode } from '../types';
+import { X, Calendar, Clock, MapPin, Plus, Trash2, AlertTriangle, Pencil, Check, RotateCcw, LogIn, LogOut, ArrowLeftRight } from 'lucide-react';
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -30,6 +30,7 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const [lateThreshold, setLateThreshold] = useState('08:15 AM');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
+  const [attendanceMode, setAttendanceMode] = useState<EventAttendanceMode>('both');
   const [eventToDelete, setEventToDelete] = useState<EventSession | null>(null);
 
   if (!isOpen) return null;
@@ -42,6 +43,7 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
     setLateThreshold(evt.lateThreshold);
     setLocation(evt.location);
     setDescription(evt.description || '');
+    setAttendanceMode(evt.attendanceMode || 'both');
   };
 
   const handleCancelEdit = () => {
@@ -52,6 +54,7 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
     setLateThreshold('08:15 AM');
     setLocation('');
     setDescription('');
+    setAttendanceMode('both');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -69,7 +72,8 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
         location: location.trim() || 'UB Campus',
         description: description.trim(),
         status: existing ? existing.status : 'Active',
-        daysLeft: existing?.daysLeft ?? 0
+        daysLeft: existing?.daysLeft ?? 0,
+        attendanceMode
       };
 
       if (onUpdateEvent) {
@@ -86,7 +90,8 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
         location: location.trim() || 'UB Campus',
         description: description.trim(),
         status: 'Active',
-        daysLeft: 0
+        daysLeft: 0,
+        attendanceMode
       };
 
       onAddEvent(newEvent);
@@ -198,10 +203,24 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] text-slate-400 flex items-center gap-2 pr-16">
+                    <div className="text-[11px] text-slate-400 flex items-center gap-2 pr-16 mt-0.5">
                       <span>{evt.startTime}</span>
                       <span>•</span>
                       <span className="truncate">{evt.location}</span>
+                      <span>•</span>
+                      {evt.attendanceMode === 'in_only' ? (
+                        <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded whitespace-nowrap">
+                          Time In Only
+                        </span>
+                      ) : evt.attendanceMode === 'out_only' ? (
+                        <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.2 rounded whitespace-nowrap">
+                          Time Out Only
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold text-ubytes-maroon-800 bg-red-50 border border-red-200 px-1.5 py-0.2 rounded whitespace-nowrap">
+                          In & Out
+                        </span>
+                      )}
                     </div>
 
                     {/* Action Buttons: Edit & Delete */}
@@ -335,6 +354,88 @@ export const CreateEventModal: React.FC<CreateEventModalProps> = ({
                 onChange={(e) => setLocation(e.target.value)}
                 className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
               />
+            </div>
+
+            {/* Attendance Mode: Both (In & Out) vs Time In Only vs Time Out Only */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-ubytes-maroon-800" />
+                  <span>Attendance Tracking Feature *</span>
+                </span>
+                <span className="text-[10px] text-slate-400 font-normal">Select scan requirements</span>
+              </label>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setAttendanceMode('both')}
+                  className={`p-2.5 rounded-xl border text-left transition-all btn-subtle cursor-pointer flex flex-col justify-between ${
+                    attendanceMode === 'both'
+                      ? 'border-ubytes-maroon-800 bg-red-50/70 ring-2 ring-ubytes-amber-500 shadow-2xs'
+                      : 'border-slate-200 hover:border-slate-300 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                      <ArrowLeftRight className="w-3.5 h-3.5 text-ubytes-maroon-800" />
+                      Time In & Out
+                    </span>
+                    {attendanceMode === 'both' && (
+                      <span className="w-2 h-2 rounded-full bg-ubytes-maroon-800"></span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500 leading-tight">
+                    Standard check-in & check-out (both taps required)
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAttendanceMode('in_only')}
+                  className={`p-2.5 rounded-xl border text-left transition-all btn-subtle cursor-pointer flex flex-col justify-between ${
+                    attendanceMode === 'in_only'
+                      ? 'border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500 shadow-2xs'
+                      : 'border-slate-200 hover:border-slate-300 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-xs text-emerald-900 flex items-center gap-1.5">
+                      <LogIn className="w-3.5 h-3.5 text-emerald-600" />
+                      Time In Only
+                    </span>
+                    {attendanceMode === 'in_only' && (
+                      <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500 leading-tight">
+                    Single-tap check-in only (seminars, assemblies)
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAttendanceMode('out_only')}
+                  className={`p-2.5 rounded-xl border text-left transition-all btn-subtle cursor-pointer flex flex-col justify-between ${
+                    attendanceMode === 'out_only'
+                      ? 'border-blue-600 bg-blue-50/70 ring-2 ring-blue-500 shadow-2xs'
+                      : 'border-slate-200 hover:border-slate-300 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-xs text-blue-900 flex items-center gap-1.5">
+                      <LogOut className="w-3.5 h-3.5 text-blue-600" />
+                      Time Out Only
+                    </span>
+                    {attendanceMode === 'out_only' && (
+                      <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500 leading-tight">
+                    Single-tap checkout only (dismissal & departure)
+                  </p>
+                </button>
+              </div>
             </div>
 
             <div className="flex items-center justify-end gap-2 pt-2">

@@ -363,11 +363,55 @@ export function App() {
 
     // Compute status accurately against the active event session threshold
     const determinedStatus = status || calculateAttendanceStatus(now, activeSession);
+    const eventMode = activeSession.attendanceMode || 'both';
 
     let updatedRecord: AttendanceRecord;
 
-    if (action === 'out' || (action === 'auto' && existing && !existing.timeOut)) {
-      // Record TIME OUT
+    if (eventMode === 'in_only') {
+      // Event is strictly TIME IN ONLY
+      if (determinedStatus === 'On-Time') {
+        playSuccessBeep();
+      } else {
+        playLateBeep();
+      }
+
+      updatedRecord = {
+        id: existing ? existing.id : `rec-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        studentId: student.id,
+        studentName: student.name,
+        program: student.program,
+        yearLevel: student.yearLevel,
+        section: student.section,
+        eventId: activeSession.id,
+        eventName: activeSession.title,
+        date: todayDateStr,
+        timeIn: existing ? existing.timeIn : timeStr,
+        timeOut: undefined,
+        status: determinedStatus,
+        photo: sanitizePhoto(student.photo),
+        syncedToSheets: false
+      };
+    } else if (eventMode === 'out_only') {
+      // Event is strictly TIME OUT ONLY
+      playTimeOutBeep();
+      updatedRecord = {
+        id: existing ? existing.id : `rec-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        studentId: student.id,
+        studentName: student.name,
+        program: student.program,
+        yearLevel: student.yearLevel,
+        section: student.section,
+        eventId: activeSession.id,
+        eventName: activeSession.title,
+        date: todayDateStr,
+        timeIn: existing?.timeIn || '—',
+        timeOut: timeStr,
+        status: determinedStatus,
+        photo: sanitizePhoto(student.photo),
+        syncedToSheets: false
+      };
+    } else if (action === 'out' || (action === 'auto' && existing && !existing.timeOut)) {
+      // Record TIME OUT (Dual mode)
       playTimeOutBeep();
       if (existing) {
         updatedRecord = {
@@ -394,7 +438,7 @@ export function App() {
         };
       }
     } else {
-      // Record TIME IN
+      // Record TIME IN (Dual mode)
       if (determinedStatus === 'On-Time') {
         playSuccessBeep();
       } else {
@@ -484,12 +528,40 @@ export function App() {
     );
 
     if (matched) {
+      const mode = activeSession.attendanceMode || 'both';
+
       // Check if already checked in for this session
       const alreadyScanned = attendanceRecords.find(
         r => r.studentId === matched.id && r.eventId === activeSession.id
       );
 
-      // If student already has both Time In and Time Out completed
+      // Handle strictly Time In Only session
+      if (mode === 'in_only') {
+        if (alreadyScanned) {
+          playWarningBeep();
+          alert(`${matched.name} has already recorded Time In for this session!`);
+          return;
+        }
+        const status = calculateAttendanceStatus(new Date(), activeSession);
+        handleRecordAttendance(matched, status, 'in');
+        setActiveView('kiosk');
+        return;
+      }
+
+      // Handle strictly Time Out Only session
+      if (mode === 'out_only') {
+        if (alreadyScanned && alreadyScanned.timeOut) {
+          playWarningBeep();
+          alert(`${matched.name} has already recorded Time Out for this session!`);
+          return;
+        }
+        const status = calculateAttendanceStatus(new Date(), activeSession);
+        handleRecordAttendance(matched, status, 'out');
+        setActiveView('kiosk');
+        return;
+      }
+
+      // Dual mode: Both Time In and Time Out
       if (alreadyScanned && alreadyScanned.timeOut) {
         playWarningBeep();
         alert(`${matched.name} has already completed attendance for this session (In: ${alreadyScanned.timeIn}, Out: ${alreadyScanned.timeOut})!`);
@@ -528,8 +600,17 @@ export function App() {
     const alreadyScanned = attendanceRecords.find(
       r => r.studentId === student.id && r.eventId === activeSession.id
     );
+    const mode = activeSession.attendanceMode || 'both';
+    let action: 'in' | 'out' = 'in';
+    if (mode === 'out_only') {
+      action = 'out';
+    } else if (mode === 'in_only') {
+      action = 'in';
+    } else {
+      action = alreadyScanned ? 'out' : 'in';
+    }
+
     const status = calculateAttendanceStatus(new Date(), activeSession);
-    const action = alreadyScanned ? 'out' : 'in';
 
     // 3. Record attendance immediately
     handleRecordAttendance(updatedStudent, status, action);
