@@ -27,7 +27,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
   onOpenLogin,
 }) => {
   return (
-    <header className="bg-gradient-to-r from-[#3d050a] via-[#520911] to-[#3d050a] text-white px-4 md:px-8 h-18 py-2.5 border-b-2 border-ubytes-amber-500/70 flex items-center justify-between gap-4 sticky top-0 z-50 shadow-xl select-none backdrop-blur-md flex-nowrap">
+    <header className="bg-gradient-to-r from-[#3d050a] via-[#520911] to-[#3d050a] text-white px-4 md:px-8 min-h-[76px] sm:min-h-[82px] md:h-22 py-2.5 sm:py-3 border-b-[3px] border-ubytes-amber-500/80 flex items-center justify-between gap-4 sticky top-0 z-50 shadow-xl select-none backdrop-blur-md flex-nowrap">
       
       {/* LEFT: Brand Identity */}
       <div 
@@ -44,13 +44,13 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
             }
           }}
           alt="Young Thinkers Society Logo"
-          className="w-11 h-11 sm:w-12 sm:h-12 md:w-13 md:h-13 object-contain drop-shadow-md group-hover:scale-105 transition-transform flex-shrink-0"
+          className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-[66px] lg:h-[66px] object-contain drop-shadow-md group-hover:scale-105 transition-transform flex-shrink-0"
         />
         <div className="flex flex-col justify-center items-start leading-none font-montserrat">
-          <span className="font-montserrat text-[11px] sm:text-xs md:text-[13.5px] lg:text-[14px] font-normal tracking-[0.16em] sm:tracking-[0.18em] text-white uppercase leading-none select-none">
+          <span className="font-montserrat text-xs sm:text-sm md:text-base lg:text-[17px] font-medium tracking-[0.16em] sm:tracking-[0.18em] text-white uppercase leading-none select-none">
             UNIVERSITY OF BOHOL
           </span>
-          <h1 className="font-montserrat text-base sm:text-xl md:text-2xl lg:text-[25px] font-extrabold tracking-tight text-white uppercase leading-none mt-1 sm:mt-1.5 drop-shadow-sm select-none">
+          <h1 className="font-montserrat text-lg sm:text-2xl md:text-3xl lg:text-[28px] font-black tracking-tight text-white uppercase leading-none mt-1 sm:mt-1.5 drop-shadow-sm select-none">
             YOUNG THINKERS SOCIETY
           </h1>
         </div>
