@@ -765,7 +765,7 @@ export const RfidKioskView: React.FC<RfidKioskViewProps> = ({
                                 alt=""
                                 className="w-5 h-5 rounded-full object-cover border border-slate-200 flex-shrink-0 bg-slate-100"
                               />
-                              <span className="font-semibold text-slate-800 text-xs truncate max-w-[155px] text-center">
+                              <span className="font-semibold text-slate-800 text-xs truncate max-w-full text-center">
                                 {row.studentName}
                               </span>
                             </div>

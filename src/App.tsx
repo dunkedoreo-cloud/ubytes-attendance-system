@@ -718,7 +718,7 @@ export function App() {
       />
 
       {/* Main Content Area with Subtle View Transition */}
-      <main className="flex-1 p-3 sm:p-4 md:p-8 max-w-7xl mx-auto w-full pb-20 md:pb-8">
+      <main className="flex-1 px-3 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-5 max-w-[1720px] 2xl:max-w-[1850px] mx-auto w-full pb-20 md:pb-8">
         <div key={activeView} className="view-enter">
           {activeView === 'kiosk' ? (
             <RfidKioskView
