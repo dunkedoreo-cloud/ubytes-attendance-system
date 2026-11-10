@@ -31,27 +31,22 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
       
       {/* LEFT: Brand Identity */}
       <div 
-        className="flex items-center gap-2 sm:gap-3 flex-shrink-0 cursor-pointer group" 
+        className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0 cursor-pointer group" 
         onClick={() => setActiveView('kiosk')}
-        title="UByTeS Attendance System"
+        title="University of Bohol - Young Thinkers Society"
       >
         <img
           src="./ubytes_logo.png"
           alt="Young Thinkers Society Logo"
-          className="w-9 h-9 sm:w-11 sm:h-11 object-contain drop-shadow-md group-hover:scale-105 transition-transform"
+          className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 object-contain drop-shadow-md group-hover:scale-105 transition-transform flex-shrink-0"
         />
-        <div className="leading-tight">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <h1 className="font-display tracking-wider text-base sm:text-xl md:text-2xl text-white font-bold leading-none">
-              YOUNG THINKERS SOCIETY
-            </h1>
-            <span className="text-[9px] sm:text-[10px] font-black bg-ubytes-amber-500 text-ubytes-maroon-950 px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
-              UBYTES
-            </span>
-          </div>
-          <p className="text-[10px] sm:text-[11px] font-condensed tracking-wider uppercase text-amber-200/80 font-medium mt-0.5 hidden xs:block">
-            University of Bohol • BS Computer Science
-          </p>
+        <div className="flex flex-col justify-center leading-tight">
+          <span className="font-sans text-[10px] sm:text-xs md:text-[13px] font-medium tracking-[0.14em] sm:tracking-[0.18em] text-white/95 uppercase leading-none select-none">
+            UNIVERSITY OF BOHOL
+          </span>
+          <h1 className="font-sans text-sm sm:text-lg md:text-xl lg:text-[22px] font-extrabold tracking-tight text-white uppercase leading-none mt-1 sm:mt-1.5 drop-shadow-sm select-none">
+            YOUNG THINKERS SOCIETY
+          </h1>
         </div>
       </div>
 
