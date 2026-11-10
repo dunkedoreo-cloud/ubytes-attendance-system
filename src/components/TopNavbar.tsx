@@ -37,6 +37,12 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
       >
         <img
           src="./ubytes_logo.png"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            if (!target.src.includes('public/ubytes_logo.png')) {
+              target.src = './public/ubytes_logo.png';
+            }
+          }}
           alt="Young Thinkers Society Logo"
           className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 object-contain drop-shadow-md group-hover:scale-105 transition-transform flex-shrink-0"
         />

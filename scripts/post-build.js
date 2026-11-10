@@ -15,4 +15,12 @@ if (fs.existsSync('dist/assets')) {
 if (fs.existsSync('dist')) {
   fs.cpSync('dist', 'docs', { recursive: true, force: true });
 }
-console.log('Successfully synchronized compiled assets to root index.html, 404.html, assets/, and docs/!');
+
+// 4. Copy public/ images directly to root (so GitHub Pages root hosting can find ubytes_logo.png, default_avatar.jpg, etc.)
+if (fs.existsSync('public')) {
+  const publicFiles = fs.readdirSync('public');
+  for (const file of publicFiles) {
+    fs.copyFileSync(`public/${file}`, file);
+  }
+}
+console.log('Successfully synchronized compiled assets to root index.html, 404.html, assets/, public root files, and docs/!');
